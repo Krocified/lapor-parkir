@@ -30,6 +30,7 @@ export default function SearchScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [listKey, setListKey] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -42,7 +43,8 @@ export default function SearchScreen() {
       const storedReports = await AsyncStorage.getItem("parking_reports");
       const parsedReports = storedReports ? JSON.parse(storedReports) : [];
       setReports(parsedReports);
-      setFilteredReports(parsedReports);
+      // Apply current search query to new data
+      applyFilter(parsedReports, searchQuery);
     } catch (error) {
       console.error("Error loading reports:", error);
       Alert.alert("Error", "Failed to load reports");
@@ -57,14 +59,13 @@ export default function SearchScreen() {
     setRefreshing(false);
   };
 
-  const filterReports = (query) => {
-    setSearchQuery(query);
+  const applyFilter = (reportsData, query) => {
     if (!query.trim()) {
-      setFilteredReports(reports);
+      setFilteredReports(reportsData);
       return;
     }
 
-    const filtered = reports.filter((report) => {
+    const filtered = reportsData.filter((report) => {
       const searchTerm = query.toLowerCase();
       return (
         report.plateNumber.toLowerCase().includes(searchTerm) ||
@@ -79,34 +80,43 @@ export default function SearchScreen() {
     setFilteredReports(filtered);
   };
 
+  const filterReports = (query) => {
+    setSearchQuery(query);
+    applyFilter(reports, query);
+  };
+
   const deleteReport = async (reportId) => {
-    Alert.alert(
-      "Delete Report",
-      "Are you sure you want to delete this report?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              const updatedReports = reports.filter(
-                (report) => report.id !== reportId
-              );
-              await AsyncStorage.setItem(
-                "parking_reports",
-                JSON.stringify(updatedReports)
-              );
-              setReports(updatedReports);
-              filterReports(searchQuery); // Re-apply current filter
-            } catch (error) {
-              console.error("Error deleting report:", error);
-              Alert.alert("Error", "Failed to delete report");
-            }
-          },
-        },
-      ]
-    );
+    // Use native confirm for web compatibility instead of Alert
+    const confirmed = confirm("Are you sure you want to delete this report?");
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const updatedReports = reports.filter((report) => report.id !== reportId);
+
+      // Save to AsyncStorage
+      await AsyncStorage.setItem(
+        "parking_reports",
+        JSON.stringify(updatedReports)
+      );
+
+      // Update local state
+      setReports(updatedReports);
+
+      // Re-apply current filter to updated data
+      applyFilter(updatedReports, searchQuery);
+
+      // Force list re-render
+      setListKey((prev) => prev + 1);
+
+      // Show success message with native alert for web compatibility
+      alert("Report deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting report:", error);
+      alert("Failed to delete report. Please try again.");
+    }
   };
 
   const formatViolations = (violations) => {
@@ -122,6 +132,7 @@ export default function SearchScreen() {
         <TouchableOpacity
           style={styles.deleteButton}
           onPress={() => deleteReport(item.id)}
+          activeOpacity={0.7}
         >
           <Ionicons name="trash-outline" size={20} color="#e74c3c" />
         </TouchableOpacity>
@@ -218,6 +229,7 @@ export default function SearchScreen() {
 
       {/* Reports List */}
       <FlatList
+        key={listKey}
         data={filteredReports}
         renderItem={renderReportCard}
         keyExtractor={(item) => item.id}
@@ -230,6 +242,7 @@ export default function SearchScreen() {
         contentContainerStyle={
           filteredReports.length === 0 ? styles.emptyContainer : null
         }
+        extraData={filteredReports}
       />
     </View>
   );
@@ -320,7 +333,11 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   deleteButton: {
-    padding: 5,
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#e74c3c",
   },
   reportContent: {
     gap: 10,
