@@ -11,8 +11,8 @@ import {
   Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LocationPicker from "../components/LocationPicker";
 
 const VIOLATION_TYPES = [
   { id: "double_parking", label: "Double Parking", icon: "car-outline" },
@@ -33,45 +33,9 @@ export default function ReportScreen() {
   const [plateNumber, setPlateNumber] = useState("");
   const [selectedViolations, setSelectedViolations] = useState([]);
   const [location, setLocation] = useState(null);
-  const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    getCurrentLocation();
-  }, []);
-
-  const getCurrentLocation = async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert(
-          "Permission Denied",
-          "Location access is needed to report violations"
-        );
-        return;
-      }
-
-      const currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
-
-      // Get address from coordinates
-      const [addressResult] = await Location.reverseGeocodeAsync({
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-      });
-
-      if (addressResult) {
-        const formattedAddress = `${addressResult.street || ""} ${
-          addressResult.streetNumber || ""
-        }, ${addressResult.city || ""}, ${addressResult.region || ""}`.trim();
-        setAddress(formattedAddress);
-      }
-    } catch (error) {
-      console.error("Error getting location:", error);
-      Alert.alert("Error", "Could not get current location");
-    }
-  };
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
 
   const toggleViolation = (violationId) => {
     setSelectedViolations((prev) =>
@@ -79,6 +43,18 @@ export default function ReportScreen() {
         ? prev.filter((id) => id !== violationId)
         : [...prev, violationId]
     );
+  };
+
+  const handleLocationSelect = (selectedLocation) => {
+    setLocation(selectedLocation);
+  };
+
+  const openLocationPicker = () => {
+    setShowLocationPicker(true);
+  };
+
+  const closeLocationPicker = () => {
+    setShowLocationPicker(false);
   };
 
   const validateForm = () => {
@@ -91,10 +67,7 @@ export default function ReportScreen() {
       return false;
     }
     if (!location) {
-      Alert.alert(
-        "Error",
-        "Location is required. Please enable location services"
-      );
+      Alert.alert("Error", "Please select a location for the violation");
       return false;
     }
     return true;
@@ -110,9 +83,9 @@ export default function ReportScreen() {
         plateNumber: plateNumber.toUpperCase().trim(),
         violations: selectedViolations,
         location: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          address: address,
+          latitude: location.latitude,
+          longitude: location.longitude,
+          address: location.address,
         },
         notes: notes.trim(),
         timestamp: new Date().toISOString(),
@@ -147,7 +120,7 @@ export default function ReportScreen() {
     setPlateNumber("");
     setSelectedViolations([]);
     setNotes("");
-    getCurrentLocation(); // Refresh location
+    setLocation(null);
   };
 
   return (
@@ -212,21 +185,37 @@ export default function ReportScreen() {
             </View>
           </View>
 
-          {/* Location */}
+          {/* Location Picker */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Location</Text>
-            <View style={styles.locationContainer}>
-              <Ionicons name="location-outline" size={20} color="#e74c3c" />
-              <Text style={styles.locationText}>
-                {address || "Getting location..."}
-              </Text>
-              <TouchableOpacity
-                onPress={getCurrentLocation}
-                style={styles.refreshLocation}
-              >
-                <Ionicons name="refresh" size={20} color="#e74c3c" />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={styles.locationPickerButton}
+              onPress={openLocationPicker}
+            >
+              <View style={styles.locationPickerContent}>
+                <Ionicons name="location-outline" size={20} color="#e74c3c" />
+                <View style={styles.locationTextContainer}>
+                  {location ? (
+                    <>
+                      <Text style={styles.locationSelectedText}>
+                        Location Selected
+                      </Text>
+                      <Text
+                        style={styles.locationAddressText}
+                        numberOfLines={2}
+                      >
+                        {location.address}
+                      </Text>
+                    </>
+                  ) : (
+                    <Text style={styles.locationPlaceholderText}>
+                      Tap to select violation location
+                    </Text>
+                  )}
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#666" />
+              </View>
+            </TouchableOpacity>
           </View>
 
           {/* Additional Notes */}
@@ -266,6 +255,14 @@ export default function ReportScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Location Picker Modal */}
+      <LocationPicker
+        visible={showLocationPicker}
+        onLocationSelect={handleLocationSelect}
+        onClose={closeLocationPicker}
+        initialLocation={location}
+      />
     </KeyboardAvoidingView>
   );
 }
@@ -335,23 +332,34 @@ const styles = StyleSheet.create({
   violationTextSelected: {
     color: "#fff",
   },
-  locationContainer: {
+  locationPickerButton: {
     backgroundColor: "#fff",
     borderRadius: 10,
-    padding: 15,
-    flexDirection: "row",
-    alignItems: "center",
     borderWidth: 1,
     borderColor: "#ddd",
   },
-  locationText: {
+  locationPickerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15,
+  },
+  locationTextContainer: {
     flex: 1,
     marginLeft: 10,
-    fontSize: 14,
-    color: "#333",
   },
-  refreshLocation: {
-    padding: 5,
+  locationSelectedText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#27ae60",
+    marginBottom: 2,
+  },
+  locationAddressText: {
+    fontSize: 12,
+    color: "#666",
+  },
+  locationPlaceholderText: {
+    fontSize: 14,
+    color: "#999",
   },
   notesInput: {
     backgroundColor: "#fff",
