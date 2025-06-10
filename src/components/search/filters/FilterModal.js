@@ -24,7 +24,7 @@ const FilterModal = ({
   const defaultRenderItem = (item, isSelected) => (
     <TouchableOpacity
       key={item.id}
-      style={styles.modalItem}
+      style={[styles.modalItem, isSelected && styles.modalItemSelected]}
       onPress={() => onToggleItem(item.id)}
     >
       <View style={styles.modalItemContent}>
@@ -32,11 +32,18 @@ const FilterModal = ({
           <Ionicons
             name={item.icon}
             size={20}
-            color={item.color || colors.textPrimary}
+            color={isSelected ? colors.white : item.color || colors.textPrimary}
             style={styles.modalItemIcon}
           />
         )}
-        <Text style={styles.modalItemText}>{item.label}</Text>
+        <Text
+          style={[
+            styles.modalItemText,
+            isSelected && styles.modalItemTextSelected,
+          ]}
+        >
+          {item.label}
+        </Text>
       </View>
       {isSelected && (
         <Ionicons name="checkmark" size={20} color={colors.white} />
@@ -135,6 +142,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     backgroundColor: colors.surface,
   },
+  modalItemSelected: {
+    backgroundColor: semanticColors.chipActiveBackground,
+    borderColor: colors.primary,
+  },
   modalItemContent: {
     flexDirection: "row",
     alignItems: "center",
@@ -147,6 +158,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.textPrimary,
     flex: 1,
+  },
+  modalItemTextSelected: {
+    color: colors.white,
+    fontWeight: "600",
   },
   modalClearButton: {
     flex: 1,
