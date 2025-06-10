@@ -162,12 +162,15 @@ const styles = StyleSheet.create({
   reportsList: {
     flex: 1,
     paddingHorizontal: 15,
+    paddingTop: 0,
   },
   listContainer: {
     paddingBottom: 20,
+    paddingTop: 0,
   },
   emptyContainer: {
     flex: 1,
+    paddingTop: 0,
   },
   loadingContainer: {
     flex: 1,
