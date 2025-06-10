@@ -1,7 +1,29 @@
 {
     "navigation": {
         "reportViolation": "Report Violation",
-        "searchReports": "Search Reports"
+        "searchReports": "Search Reports",
+        "laporParkir": "Lapor Parkir",
+        "home": "Home",
+        "about": "About"
+    },
+    "about": {
+        "description": "Lapor Parkir is a community-driven app that helps citizens report parking violations and contribute to better urban mobility. Together, we can create more organized and accessible public spaces.",
+        "features": "Features",
+        "reportViolations": "Report Violations",
+        "reportViolationsDesc": "Easily report parking violations with location and violation type details.",
+        "searchReports": "Search Reports",
+        "searchReportsDesc": "Find and filter violation reports by location, date, and violation type.",
+        "plateTypes": "Special Plate Recognition",
+        "plateTypesDesc": "Identify and categorize different vehicle plate types including police, diplomatic, and more.",
+        "developer": "Developer",
+        "developerInfo": "This app was developed as part of a community initiative to improve urban mobility and parking compliance.",
+        "contact": "Contact & Support",
+        "legal": "Legal",
+        "disclaimer": "This app is for community use only. Please verify all reports with local authorities before taking any action.",
+        "privacyPolicy": "Privacy Policy",
+        "termsOfService": "Terms of Service",
+        "madeWith": "Made with ❤️ for better cities",
+        "allRightsReserved": "All rights reserved."
     },
     "report": {
         "plateNumber": "License Plate Number",

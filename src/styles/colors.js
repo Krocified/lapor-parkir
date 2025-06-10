@@ -65,6 +65,11 @@ export const semanticColors = {
   headerBackground: colors.primary,
   headerText: colors.white,
 
+  // Drawer Navigation
+  drawerBackground: colors.surface,
+  drawerText: colors.textPrimary,
+  drawerTextInactive: colors.textSecondary,
+
   // Buttons
   buttonPrimary: colors.primary,
   buttonPrimaryText: colors.white,
@@ -90,6 +95,9 @@ export const semanticColors = {
   plateNumberText: colors.white,
   violationText: colors.primary,
   successText: colors.success,
+
+  // Icons and decorative elements
+  iconBackground: colors.background,
 
   // Filter chips
   chipBackground: colors.surface,

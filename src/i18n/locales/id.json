@@ -1,7 +1,29 @@
 {
     "navigation": {
         "reportViolation": "Laporkan Pelanggaran",
-        "searchReports": "Cari Laporan"
+        "searchReports": "Cari Laporan",
+        "laporParkir": "Lapor Parkir",
+        "home": "Beranda",
+        "about": "Tentang"
+    },
+    "about": {
+        "description": "Lapor Parkir adalah aplikasi berbasis komunitas yang membantu warga melaporkan pelanggaran parkir dan berkontribusi pada mobilitas urban yang lebih baik. Bersama-sama, kita dapat menciptakan ruang publik yang lebih teratur dan mudah diakses.",
+        "features": "Fitur",
+        "reportViolations": "Laporkan Pelanggaran",
+        "reportViolationsDesc": "Mudah melaporkan pelanggaran parkir dengan detail lokasi dan jenis pelanggaran.",
+        "searchReports": "Cari Laporan",
+        "searchReportsDesc": "Temukan dan saring laporan pelanggaran berdasarkan lokasi, tanggal, dan jenis pelanggaran.",
+        "plateTypes": "Pengenalan Plat Khusus",
+        "plateTypesDesc": "Identifikasi dan kategorikan berbagai jenis plat kendaraan termasuk polisi, diplomatik, dan lainnya.",
+        "developer": "Pengembang",
+        "developerInfo": "Aplikasi ini dikembangkan sebagai bagian dari inisiatif komunitas untuk meningkatkan mobilitas urban dan kepatuhan parkir.",
+        "contact": "Kontak & Dukungan",
+        "legal": "Legal",
+        "disclaimer": "Aplikasi ini hanya untuk penggunaan komunitas. Harap verifikasi semua laporan dengan otoritas lokal sebelum mengambil tindakan.",
+        "privacyPolicy": "Kebijakan Privasi",
+        "termsOfService": "Syarat Layanan",
+        "madeWith": "Dibuat dengan ❤️ untuk kota yang lebih baik",
+        "allRightsReserved": "Hak cipta dilindungi."
     },
     "report": {
         "plateNumber": "Nomor Plat Kendaraan",
@@ -34,13 +56,7 @@
         "diplomatic": "Diplomatik",
         "government": "Pemerintah",
         "emergency": "Darurat",
-        "other": "Khusus Lainnya",
-        "deleteCancelButton": "Batal",
-        "deleteSuccess": "Laporan berhasil dihapus!",
-        "deleteError": "Gagal menghapus laporan. Silakan coba lagi.",
-        "loadError": "Gagal memuat laporan",
-        "reportStats_one": "{{count}} laporan",
-        "reportStats_other": "{{count}} laporan"
+        "other": "Khusus Lainnya"
     },
     "violations": {
         "doubleParking": "Parkir Ganda",
