@@ -12,6 +12,12 @@ fi
 
 echo "✅ Build successful!"
 
+# Fix asset paths for GitHub Pages
+echo "🔧 Fixing asset paths for GitHub Pages..."
+sed -i 's|href="/favicon.ico"|href="./favicon.ico"|g' dist/index.html
+sed -i 's|src="/_expo/|src="./_expo/|g' dist/index.html
+echo "✅ Asset paths fixed!"
+
 # Add dist folder to git and deploy to gh-pages branch
 echo "🚀 Deploying to GitHub Pages..."
 
@@ -30,4 +36,4 @@ git push origin main
 git subtree push --prefix dist origin gh-pages
 
 echo "🎉 Deployment complete!"
-echo "Your app will be available at: https://Krocified.github.io/lapor-parkir"
+echo "Your app will be available at: https://krocified.github.io/lapor-parkir"
