@@ -9,17 +9,19 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../styles/colors";
 import { PLATE_TYPES } from "../constants/plateTypes";
+import { getViolationLabel, getPlateTypeLabel } from "../i18n/translations";
 
-const FILTER_TYPES = {
+export const SEARCH_TYPES = {
   ALL: "all",
   PLATES: "plates",
   LOCATION: "location",
   NOTES: "notes",
 };
 
-const DATE_FILTERS = {
+export const DATE_FILTERS = {
   ALL: "all",
   TODAY: "today",
   YESTERDAY: "yesterday",
@@ -28,366 +30,378 @@ const DATE_FILTERS = {
   CUSTOM: "custom",
 };
 
-const VIOLATION_LABELS = {
-  double_parking: "Double Parking",
-  no_parking_zone: "No Parking Zone",
-  handicap_spot: "Illegal Handicap Parking",
-  fire_hydrant: "Blocking Fire Hydrant",
-  crosswalk: "Blocking Crosswalk",
-  expired_meter: "Expired Meter",
-  blocking_driveway: "Blocking Driveway",
-  no_stopping: "No Stopping Zone",
-};
-
 const SearchFilters = ({
   searchQuery,
   onSearchChange,
-  activeFilterType,
-  onFilterTypeChange,
-  activeDateFilter,
+  searchType,
+  onSearchTypeChange,
+  dateFilter,
   onDateFilterChange,
-  selectedViolations,
-  onViolationToggle,
-  selectedPlateTypes,
-  onPlateTypeToggle,
-  onClearAllFilters,
-  hasActiveFilters,
+  plateTypeFilters,
+  onPlateTypeFiltersChange,
+  violationFilters,
+  onViolationFiltersChange,
+  onClearFilters,
   reportsCount,
-  filteredCount,
+  hasActiveFilters,
 }) => {
-  const [showFilterModal, setShowFilterModal] = React.useState(false);
+  const { t } = useTranslation();
+
   const [showPlateTypeModal, setShowPlateTypeModal] = React.useState(false);
+  const [showViolationModal, setShowViolationModal] = React.useState(false);
 
-  const renderSearchBar = () => (
-    <View style={styles.searchContainer}>
-      <Ionicons
-        name="search-outline"
-        size={20}
-        color={colors.textMuted}
-        style={styles.searchIcon}
-      />
-      <TextInput
-        style={styles.searchInput}
-        value={searchQuery}
-        onChangeText={onSearchChange}
-        placeholder={`Search in ${
-          activeFilterType === FILTER_TYPES.ALL
-            ? "all fields"
-            : activeFilterType
-        }...`}
-        placeholderTextColor={colors.textMuted}
-      />
-      {searchQuery ? (
-        <TouchableOpacity
-          onPress={() => onSearchChange("")}
-          style={styles.clearButton}
-        >
-          <Ionicons name="close-circle" size={20} color={colors.textMuted} />
-        </TouchableOpacity>
-      ) : null}
-    </View>
-  );
+  const getSearchPlaceholder = () => {
+    switch (searchType) {
+      case SEARCH_TYPES.ALL:
+        return t("search.searchPlaceholderAllFields");
+      case SEARCH_TYPES.PLATES:
+        return t("search.searchPlaceholderPlates");
+      case SEARCH_TYPES.LOCATION:
+        return t("search.searchPlaceholderLocation");
+      case SEARCH_TYPES.NOTES:
+        return t("search.searchPlaceholderNotes");
+      default:
+        return t("search.searchPlaceholder");
+    }
+  };
 
-  const renderFilterChips = () => (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      style={styles.filterChipsContainer}
-      contentContainerStyle={styles.filterChipsContent}
-    >
-      {/* Search Type Filters */}
-      {Object.entries(FILTER_TYPES).map(([key, value]) => (
-        <TouchableOpacity
-          key={key}
-          style={[
-            styles.filterChip,
-            activeFilterType === value && styles.activeFilterChip,
-          ]}
-          onPress={() => onFilterTypeChange(value)}
-        >
-          <Text
-            style={[
-              styles.filterChipText,
-              activeFilterType === value && styles.activeFilterChipText,
-            ]}
+  const getDateFilterLabel = (filter) => {
+    switch (filter) {
+      case DATE_FILTERS.ALL:
+        return t("search.dateFilterAny");
+      case DATE_FILTERS.TODAY:
+        return t("search.dateFilterToday");
+      case DATE_FILTERS.YESTERDAY:
+        return t("search.dateFilterYesterday");
+      case DATE_FILTERS.LAST_WEEK:
+        return t("search.dateFilterLastWeek");
+      case DATE_FILTERS.LAST_MONTH:
+        return t("search.dateFilterLastMonth");
+      default:
+        return filter.charAt(0).toUpperCase() + filter.slice(1);
+    }
+  };
+
+  const getSearchTypeLabel = (type) => {
+    switch (type) {
+      case SEARCH_TYPES.ALL:
+        return t("search.filterAllFields");
+      case SEARCH_TYPES.PLATES:
+        return t("search.filterPlates");
+      case SEARCH_TYPES.LOCATION:
+        return t("search.filterLocation");
+      case SEARCH_TYPES.NOTES:
+        return t("search.filterNotes");
+      default:
+        return type;
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <Ionicons
+          name="search-outline"
+          size={20}
+          color={colors.textMuted}
+          style={styles.searchIcon}
+        />
+        <TextInput
+          style={styles.searchInput}
+          value={searchQuery}
+          onChangeText={onSearchChange}
+          placeholder={getSearchPlaceholder()}
+          placeholderTextColor={colors.textMuted}
+        />
+        {searchQuery.length > 0 && (
+          <TouchableOpacity
+            onPress={() => onSearchChange("")}
+            style={styles.clearSearchButton}
           >
-            {key === "ALL"
-              ? "All Fields"
-              : key.charAt(0) + key.slice(1).toLowerCase()}
-          </Text>
-        </TouchableOpacity>
-      ))}
+            <Ionicons name="close-circle" size={20} color={colors.textMuted} />
+          </TouchableOpacity>
+        )}
+      </View>
 
-      {/* Plate Type Filters */}
-      <TouchableOpacity
-        style={[
-          styles.filterChip,
-          styles.advancedFilterChip,
-          selectedPlateTypes.length > 0 && styles.activeFilterChip,
-        ]}
-        onPress={() => setShowPlateTypeModal(true)}
+      {/* Filter Chips */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.filtersScrollView}
+        contentContainerStyle={styles.filtersContainer}
       >
-        <Ionicons
-          name="shield-outline"
-          size={14}
-          color={
-            selectedPlateTypes.length > 0 ? colors.white : colors.textSecondary
-          }
-        />
-        <Text
-          style={[
-            styles.filterChipText,
-            selectedPlateTypes.length > 0 && styles.activeFilterChipText,
-          ]}
-        >
-          Plate Types{" "}
-          {selectedPlateTypes.length > 0 && `(${selectedPlateTypes.length})`}
-        </Text>
-      </TouchableOpacity>
-
-      {/* Violation Type Filters */}
-      <TouchableOpacity
-        style={[
-          styles.filterChip,
-          styles.advancedFilterChip,
-          selectedViolations.length > 0 && styles.activeFilterChip,
-        ]}
-        onPress={() => setShowFilterModal(true)}
-      >
-        <Ionicons
-          name="options-outline"
-          size={14}
-          color={
-            selectedViolations.length > 0 ? colors.white : colors.textSecondary
-          }
-        />
-        <Text
-          style={[
-            styles.filterChipText,
-            selectedViolations.length > 0 && styles.activeFilterChipText,
-          ]}
-        >
-          Violations{" "}
-          {selectedViolations.length > 0 && `(${selectedViolations.length})`}
-        </Text>
-      </TouchableOpacity>
-
-      {/* Date Filters */}
-      <View style={styles.filterSeparator} />
-      {Object.entries(DATE_FILTERS)
-        .slice(0, -1)
-        .map(([key, value]) => (
+        {/* Search Type Filters */}
+        {Object.entries(SEARCH_TYPES).map(([key, value]) => (
           <TouchableOpacity
             key={key}
             style={[
               styles.filterChip,
-              activeDateFilter === value && styles.activeFilterChip,
+              searchType === value && styles.filterChipActive,
             ]}
-            onPress={() => onDateFilterChange(value)}
+            onPress={() => onSearchTypeChange(value)}
           >
             <Text
               style={[
                 styles.filterChipText,
-                activeDateFilter === value && styles.activeFilterChipText,
+                searchType === value && styles.filterChipTextActive,
               ]}
             >
-              {key === "ALL"
-                ? "Any Date"
-                : key === "LAST_WEEK"
-                ? "Last Week"
-                : key === "LAST_MONTH"
-                ? "Last Month"
-                : key.charAt(0) + key.slice(1).toLowerCase()}
+              {getSearchTypeLabel(value)}
             </Text>
           </TouchableOpacity>
         ))}
 
-      {/* Clear Filters */}
-      {hasActiveFilters && (
-        <>
-          <View style={styles.filterSeparator} />
+        {/* Plate Type Filter */}
+        <TouchableOpacity
+          style={[
+            styles.filterChip,
+            plateTypeFilters.length > 0 && styles.filterChipActive,
+          ]}
+          onPress={() => setShowPlateTypeModal(true)}
+        >
+          <Ionicons
+            name="shield-outline"
+            size={14}
+            color={
+              plateTypeFilters.length > 0 ? colors.white : colors.textSecondary
+            }
+            style={styles.filterChipIcon}
+          />
+          <Text
+            style={[
+              styles.filterChipText,
+              plateTypeFilters.length > 0 && styles.filterChipTextActive,
+            ]}
+          >
+            {t("search.plateTypesFilter")}{" "}
+            {plateTypeFilters.length > 0 && `(${plateTypeFilters.length})`}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Violation Filter */}
+        <TouchableOpacity
+          style={[
+            styles.filterChip,
+            violationFilters.length > 0 && styles.filterChipActive,
+          ]}
+          onPress={() => setShowViolationModal(true)}
+        >
+          <Ionicons
+            name="options-outline"
+            size={14}
+            color={
+              violationFilters.length > 0 ? colors.white : colors.textSecondary
+            }
+            style={styles.filterChipIcon}
+          />
+          <Text
+            style={[
+              styles.filterChipText,
+              violationFilters.length > 0 && styles.filterChipTextActive,
+            ]}
+          >
+            {t("search.violationsFilter")}{" "}
+            {violationFilters.length > 0 && `(${violationFilters.length})`}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Date Filters */}
+        {Object.entries(DATE_FILTERS)
+          .filter(([key]) => key !== "CUSTOM")
+          .map(([key, value]) => (
+            <TouchableOpacity
+              key={key}
+              style={[
+                styles.filterChip,
+                dateFilter === value && styles.filterChipActive,
+              ]}
+              onPress={() => onDateFilterChange(value)}
+            >
+              <Text
+                style={[
+                  styles.filterChipText,
+                  dateFilter === value && styles.filterChipTextActive,
+                ]}
+              >
+                {getDateFilterLabel(value)}
+              </Text>
+            </TouchableOpacity>
+          ))}
+
+        {/* Clear Filters */}
+        {hasActiveFilters && (
           <TouchableOpacity
-            style={[styles.filterChip, styles.clearFilterChip]}
-            onPress={onClearAllFilters}
+            style={[styles.filterChip, styles.clearFiltersChip]}
+            onPress={onClearFilters}
           >
             <Ionicons
               name="close-circle-outline"
               size={14}
               color={colors.primary}
+              style={styles.filterChipIcon}
             />
-            <Text style={[styles.filterChipText, { color: colors.primary }]}>
-              Clear
+            <Text style={[styles.filterChipText, styles.clearFiltersText]}>
+              {t("search.clearFilters")}
             </Text>
           </TouchableOpacity>
-        </>
-      )}
-    </ScrollView>
-  );
+        )}
+      </ScrollView>
 
-  const renderPlateTypeModal = () => (
-    <Modal
-      visible={showPlateTypeModal}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => setShowPlateTypeModal(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Filter by Plate Types</Text>
-            <TouchableOpacity onPress={() => setShowPlateTypeModal(false)}>
-              <Ionicons name="close" size={24} color={colors.textPrimary} />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView style={styles.modalBody}>
-            {PLATE_TYPES.map((type) => (
-              <TouchableOpacity
-                key={type.id}
-                style={[
-                  styles.plateTypeOption,
-                  selectedPlateTypes.includes(type.id) &&
-                    styles.selectedPlateTypeOption,
-                ]}
-                onPress={() => onPlateTypeToggle(type.id)}
-              >
-                <View style={styles.plateTypeOptionContent}>
-                  <Ionicons
-                    name={type.icon}
-                    size={20}
-                    color={
-                      selectedPlateTypes.includes(type.id)
-                        ? colors.white
-                        : type.color
-                    }
-                  />
-                  <Text
-                    style={[
-                      styles.plateTypeOptionText,
-                      selectedPlateTypes.includes(type.id) &&
-                        styles.selectedPlateTypeOptionText,
-                    ]}
-                  >
-                    {type.label}
-                  </Text>
-                </View>
-                {selectedPlateTypes.includes(type.id) && (
-                  <Ionicons name="checkmark" size={20} color={colors.white} />
-                )}
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          <View style={styles.modalFooter}>
-            <TouchableOpacity
-              style={styles.clearViolationsButton}
-              onPress={() => {
-                selectedPlateTypes.forEach((id) => onPlateTypeToggle(id));
-              }}
-            >
-              <Text style={styles.clearViolationsButtonText}>
-                Clear Plate Types
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.applyButton}
-              onPress={() => setShowPlateTypeModal(false)}
-            >
-              <Text style={styles.applyButtonText}>Apply</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
-
-  const renderFilterModal = () => (
-    <Modal
-      visible={showFilterModal}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => setShowFilterModal(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Filter by Violations</Text>
-            <TouchableOpacity onPress={() => setShowFilterModal(false)}>
-              <Ionicons name="close" size={24} color={colors.textPrimary} />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView style={styles.modalBody}>
-            {Object.entries(VIOLATION_LABELS).map(([id, label]) => (
-              <TouchableOpacity
-                key={id}
-                style={[
-                  styles.violationOption,
-                  selectedViolations.includes(id) &&
-                    styles.selectedViolationOption,
-                ]}
-                onPress={() => onViolationToggle(id)}
-              >
-                <Text
-                  style={[
-                    styles.violationOptionText,
-                    selectedViolations.includes(id) &&
-                      styles.selectedViolationOptionText,
-                  ]}
-                >
-                  {label}
-                </Text>
-                {selectedViolations.includes(id) && (
-                  <Ionicons name="checkmark" size={20} color={colors.white} />
-                )}
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-
-          <View style={styles.modalFooter}>
-            <TouchableOpacity
-              style={styles.clearViolationsButton}
-              onPress={() => {
-                selectedViolations.forEach((id) => onViolationToggle(id));
-              }}
-            >
-              <Text style={styles.clearViolationsButtonText}>
-                Clear Violations
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.applyButton}
-              onPress={() => setShowFilterModal(false)}
-            >
-              <Text style={styles.applyButtonText}>Apply</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
-
-  const renderStats = () => (
-    <View style={styles.statsContainer}>
+      {/* Stats */}
       <Text style={styles.statsText}>
-        {filteredCount} of {reportsCount} reports
-        {hasActiveFilters && " (filtered)"}
+        {reportsCount} {reportsCount === 1 ? "report" : "reports"}
+        {hasActiveFilters && t("search.statsFiltered")}
       </Text>
-    </View>
-  );
 
-  return (
-    <>
-      {renderSearchBar()}
-      {renderFilterChips()}
-      {renderStats()}
-      {renderPlateTypeModal()}
-      {renderFilterModal()}
-    </>
+      {/* Plate Type Modal */}
+      <Modal
+        visible={showPlateTypeModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowPlateTypeModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                {t("search.modalPlateTypesTitle")}
+              </Text>
+              <TouchableOpacity onPress={() => setShowPlateTypeModal(false)}>
+                <Ionicons name="close" size={24} color={colors.textPrimary} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalBody}>
+              {PLATE_TYPES.map((plateType) => (
+                <TouchableOpacity
+                  key={plateType.id}
+                  style={styles.modalItem}
+                  onPress={() => {
+                    const isSelected = plateTypeFilters.includes(plateType.id);
+                    if (isSelected) {
+                      onPlateTypeFiltersChange(
+                        plateTypeFilters.filter((id) => id !== plateType.id)
+                      );
+                    } else {
+                      onPlateTypeFiltersChange([
+                        ...plateTypeFilters,
+                        plateType.id,
+                      ]);
+                    }
+                  }}
+                >
+                  <View style={styles.modalItemContent}>
+                    <Ionicons
+                      name={plateType.icon}
+                      size={20}
+                      color={plateType.color}
+                      style={styles.modalItemIcon}
+                    />
+                    <Text style={styles.modalItemText}>
+                      {getPlateTypeLabel(plateType.id, t)}
+                    </Text>
+                  </View>
+                  {plateTypeFilters.includes(plateType.id) && (
+                    <Ionicons name="checkmark" size={20} color={colors.white} />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              style={styles.modalClearButton}
+              onPress={() => {
+                onPlateTypeFiltersChange([]);
+                setShowPlateTypeModal(false);
+              }}
+            >
+              <Text style={styles.modalClearButtonText}>
+                {t("search.modalClearPlateTypes")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Violation Modal */}
+      <Modal
+        visible={showViolationModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowViolationModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                {t("search.modalViolationsTitle")}
+              </Text>
+              <TouchableOpacity onPress={() => setShowViolationModal(false)}>
+                <Ionicons name="close" size={24} color={colors.textPrimary} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalBody}>
+              {[
+                "double_parking",
+                "no_parking_zone",
+                "handicap_spot",
+                "fire_hydrant",
+                "crosswalk",
+                "expired_meter",
+                "blocking_driveway",
+                "no_stopping",
+              ].map((violationId) => (
+                <TouchableOpacity
+                  key={violationId}
+                  style={styles.modalItem}
+                  onPress={() => {
+                    const isSelected = violationFilters.includes(violationId);
+                    if (isSelected) {
+                      onViolationFiltersChange(
+                        violationFilters.filter((id) => id !== violationId)
+                      );
+                    } else {
+                      onViolationFiltersChange([
+                        ...violationFilters,
+                        violationId,
+                      ]);
+                    }
+                  }}
+                >
+                  <Text style={styles.modalItemText}>
+                    {getViolationLabel(violationId, t)}
+                  </Text>
+                  {violationFilters.includes(violationId) && (
+                    <Ionicons name="checkmark" size={20} color={colors.white} />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              style={styles.modalClearButton}
+              onPress={() => {
+                onViolationFiltersChange([]);
+                setShowViolationModal(false);
+              }}
+            >
+              <Text style={styles.modalClearButtonText}>
+                {t("search.modalClearViolations")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    // Remove flex: 1 to prevent unnecessary expansion
+  },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -406,17 +420,17 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 16,
   },
-  clearButton: {
+  clearSearchButton: {
     padding: 5,
   },
-  filterChipsContainer: {
+  filtersScrollView: {
     paddingHorizontal: 15,
     paddingVertical: 8,
     flexShrink: 0,
     height: 44,
     flexGrow: 0,
   },
-  filterChipsContent: {
+  filtersContainer: {
     gap: 6,
     paddingRight: 15,
     alignItems: "center",
@@ -435,7 +449,7 @@ const styles = StyleSheet.create({
     height: 28,
     flexShrink: 0,
   },
-  activeFilterChip: {
+  filterChipActive: {
     backgroundColor: semanticColors.chipActiveBackground,
     borderColor: colors.primary,
   },
@@ -445,34 +459,19 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     lineHeight: 16,
   },
-  activeFilterChipText: {
+  filterChipTextActive: {
     color: semanticColors.chipActiveText,
     fontWeight: "600",
   },
-  filterSeparator: {
-    width: 1,
-    height: 16,
-    backgroundColor: colors.border,
-    marginHorizontal: 6,
-    alignSelf: "center",
-  },
-  advancedFilterChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  clearFilterChip: {
-    borderColor: colors.primary,
-    backgroundColor: colors.surface,
-  },
-  statsContainer: {
-    paddingHorizontal: 15,
-    marginBottom: 10,
+  filterChipIcon: {
+    marginRight: 10,
   },
   statsText: {
     fontSize: 14,
     color: colors.textSecondary,
     fontWeight: "500",
+    paddingHorizontal: 15,
+    marginBottom: 5,
   },
   modalOverlay: {
     flex: 1,
@@ -513,7 +512,7 @@ const styles = StyleSheet.create({
     padding: 20,
     maxHeight: 300,
   },
-  violationOption: {
+  modalItem: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -524,85 +523,38 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     backgroundColor: colors.surface,
   },
-  selectedViolationOption: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
+  modalItemContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
   },
-  violationOptionText: {
+  modalItemIcon: {
+    marginRight: 10,
+  },
+  modalItemText: {
     fontSize: 16,
     color: colors.textPrimary,
     flex: 1,
   },
-  selectedViolationOptionText: {
-    color: colors.white,
-    fontWeight: "600",
-  },
-  modalFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: semanticColors.modalBorder,
-    gap: 10,
-  },
-  clearViolationsButton: {
-    flex: 1,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 8,
-    backgroundColor: colors.surfaceSecondary,
-    alignItems: "center",
-  },
-  clearViolationsButtonText: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    fontWeight: "500",
-  },
-  applyButton: {
+  modalClearButton: {
     flex: 1,
     padding: 12,
     backgroundColor: colors.primary,
     borderRadius: 8,
     alignItems: "center",
   },
-  applyButtonText: {
+  modalClearButtonText: {
     fontSize: 14,
     fontWeight: "600",
     color: colors.white,
   },
-  plateTypeOption: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 15,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    borderRadius: 10,
-    marginBottom: 8,
+  clearFiltersChip: {
+    borderColor: colors.primary,
     backgroundColor: colors.surface,
   },
-  selectedPlateTypeOption: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  plateTypeOptionContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  plateTypeOptionText: {
-    fontSize: 16,
-    color: colors.textPrimary,
-    marginLeft: 10,
-    flex: 1,
-  },
-  selectedPlateTypeOptionText: {
-    color: colors.white,
-    fontWeight: "600",
+  clearFiltersText: {
+    color: colors.primary,
   },
 });
 
-export { FILTER_TYPES, DATE_FILTERS };
 export default SearchFilters;

@@ -2,28 +2,20 @@ import React, { useState, useEffect, useCallback } from "react";
 import { View, StyleSheet, Animated } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 import InAppNotification from "../components/InAppNotification";
 import ConfirmDialog from "../components/ConfirmDialog";
 import SearchFilters, {
-  FILTER_TYPES,
+  SEARCH_TYPES,
   DATE_FILTERS,
 } from "../components/SearchFilters";
 import SearchResults from "../components/SearchResults";
 import { PLATE_TYPES } from "../constants/plateTypes";
 import colors from "../styles/colors";
 
-const VIOLATION_LABELS = {
-  double_parking: "Double Parking",
-  no_parking_zone: "No Parking Zone",
-  handicap_spot: "Illegal Handicap Parking",
-  fire_hydrant: "Blocking Fire Hydrant",
-  crosswalk: "Blocking Crosswalk",
-  expired_meter: "Expired Meter",
-  blocking_driveway: "Blocking Driveway",
-  no_stopping: "No Stopping Zone",
-};
-
 export default function SearchScreen() {
+  const { t } = useTranslation();
+
   const [reports, setReports] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,7 +24,7 @@ export default function SearchScreen() {
   const [listKey, setListKey] = useState(0);
 
   // Advanced filter states
-  const [activeFilterType, setActiveFilterType] = useState(FILTER_TYPES.ALL);
+  const [activeFilterType, setActiveFilterType] = useState(SEARCH_TYPES.ALL);
   const [activeDateFilter, setActiveDateFilter] = useState(DATE_FILTERS.ALL);
   const [selectedViolations, setSelectedViolations] = useState([]);
   const [selectedPlateTypes, setSelectedPlateTypes] = useState([]);
@@ -76,17 +68,10 @@ export default function SearchScreen() {
       const parsedReports = storedReports ? JSON.parse(storedReports) : [];
       setReports(parsedReports);
       // Apply current filters to new data
-      applyAllFilters(
-        parsedReports,
-        searchQuery,
-        activeFilterType,
-        activeDateFilter,
-        selectedViolations,
-        selectedPlateTypes
-      );
+      applyAllFilters();
     } catch (error) {
       console.error("Error loading reports:", error);
-      showNotification("Failed to load reports", "error");
+      showNotification(t("search.loadError"), "error");
     } finally {
       setIsLoading(false);
     }
@@ -128,68 +113,67 @@ export default function SearchScreen() {
     }
   };
 
-  const applyAllFilters = (
-    reportsData,
-    query,
-    filterType,
-    dateFilter,
-    violationFilters,
-    plateTypeFilters
-  ) => {
-    let filtered = [...reportsData];
+  // Apply all filters whenever any filter state changes
+  useEffect(() => {
+    applyAllFilters();
+  }, [
+    searchQuery,
+    activeFilterType,
+    activeDateFilter,
+    selectedViolations,
+    selectedPlateTypes,
+    reports,
+  ]);
 
-    // Apply date filter first
-    if (dateFilter !== DATE_FILTERS.ALL) {
+  const applyAllFilters = () => {
+    let filtered = [...reports];
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const searchTerm = searchQuery.toLowerCase();
+      filtered = filtered.filter((report) => {
+        switch (activeFilterType) {
+          case SEARCH_TYPES.PLATES:
+            return report.plateNumber.toLowerCase().includes(searchTerm);
+          case SEARCH_TYPES.LOCATION:
+            return report.location.address.toLowerCase().includes(searchTerm);
+          case SEARCH_TYPES.NOTES:
+            return report.notes.toLowerCase().includes(searchTerm);
+          case SEARCH_TYPES.ALL:
+          default:
+            return (
+              report.plateNumber.toLowerCase().includes(searchTerm) ||
+              report.location.address.toLowerCase().includes(searchTerm) ||
+              report.notes.toLowerCase().includes(searchTerm) ||
+              report.violations.some((violation) =>
+                violation.toLowerCase().includes(searchTerm)
+              )
+            );
+        }
+      });
+    }
+
+    // Apply date filter
+    if (activeDateFilter !== DATE_FILTERS.ALL) {
       filtered = filtered.filter((report) =>
-        isDateInRange(report.date, dateFilter)
+        isDateInRange(new Date(report.timestamp), activeDateFilter)
       );
     }
 
     // Apply violation filter
-    if (violationFilters.length > 0) {
+    if (selectedViolations.length > 0) {
       filtered = filtered.filter((report) =>
-        report.violations.some((violation) =>
-          violationFilters.includes(violation)
+        selectedViolations.some((violation) =>
+          report.violations.includes(violation)
         )
       );
     }
 
     // Apply plate type filter
-    if (plateTypeFilters.length > 0) {
+    if (selectedPlateTypes.length > 0) {
       filtered = filtered.filter((report) =>
-        plateTypeFilters.includes(report.plateType || "regular")
+        selectedPlateTypes.includes(report.plateType || "regular")
       );
-    }
-
-    // Apply text search with filter type
-    if (query.trim()) {
-      const searchTerm = query.toLowerCase();
-
-      filtered = filtered.filter((report) => {
-        switch (filterType) {
-          case FILTER_TYPES.PLATES:
-            return report.plateNumber.toLowerCase().includes(searchTerm);
-
-          case FILTER_TYPES.LOCATION:
-            return report.location.address.toLowerCase().includes(searchTerm);
-
-          case FILTER_TYPES.NOTES:
-            return report.notes.toLowerCase().includes(searchTerm);
-
-          case FILTER_TYPES.ALL:
-          default:
-            return (
-              report.plateNumber.toLowerCase().includes(searchTerm) ||
-              report.location.address.toLowerCase().includes(searchTerm) ||
-              report.violations.some((violationId) =>
-                VIOLATION_LABELS[violationId]
-                  ?.toLowerCase()
-                  .includes(searchTerm)
-              ) ||
-              report.notes.toLowerCase().includes(searchTerm)
-            );
-        }
-      });
     }
 
     setFilteredReports(filtered);
@@ -197,38 +181,17 @@ export default function SearchScreen() {
 
   const filterReports = (query) => {
     setSearchQuery(query);
-    applyAllFilters(
-      reports,
-      query,
-      activeFilterType,
-      activeDateFilter,
-      selectedViolations,
-      selectedPlateTypes
-    );
+    applyAllFilters();
   };
 
   const setFilterType = (filterType) => {
     setActiveFilterType(filterType);
-    applyAllFilters(
-      reports,
-      searchQuery,
-      filterType,
-      activeDateFilter,
-      selectedViolations,
-      selectedPlateTypes
-    );
+    applyAllFilters();
   };
 
   const setDateFilter = (dateFilter) => {
     setActiveDateFilter(dateFilter);
-    applyAllFilters(
-      reports,
-      searchQuery,
-      activeFilterType,
-      dateFilter,
-      selectedViolations,
-      selectedPlateTypes
-    );
+    applyAllFilters();
   };
 
   const toggleViolationFilter = (violationId) => {
@@ -237,14 +200,7 @@ export default function SearchScreen() {
       : [...selectedViolations, violationId];
 
     setSelectedViolations(newViolations);
-    applyAllFilters(
-      reports,
-      searchQuery,
-      activeFilterType,
-      activeDateFilter,
-      newViolations,
-      selectedPlateTypes
-    );
+    applyAllFilters();
   };
 
   const togglePlateTypeFilter = (plateTypeId) => {
@@ -253,29 +209,21 @@ export default function SearchScreen() {
       : [...selectedPlateTypes, plateTypeId];
 
     setSelectedPlateTypes(newPlateTypes);
-    applyAllFilters(
-      reports,
-      searchQuery,
-      activeFilterType,
-      activeDateFilter,
-      selectedViolations,
-      newPlateTypes
-    );
+    applyAllFilters();
   };
 
   const clearAllFilters = () => {
     setSearchQuery("");
-    setActiveFilterType(FILTER_TYPES.ALL);
+    setActiveFilterType(SEARCH_TYPES.ALL);
     setActiveDateFilter(DATE_FILTERS.ALL);
     setSelectedViolations([]);
     setSelectedPlateTypes([]);
-    setFilteredReports(reports);
   };
 
   const hasActiveFilters = () => {
     return (
       searchQuery ||
-      activeFilterType !== FILTER_TYPES.ALL ||
+      activeFilterType !== SEARCH_TYPES.ALL ||
       activeDateFilter !== DATE_FILTERS.ALL ||
       selectedViolations.length > 0 ||
       selectedPlateTypes.length > 0
@@ -306,23 +254,16 @@ export default function SearchScreen() {
       setReports(updatedReports);
 
       // Re-apply current filter to updated data
-      applyAllFilters(
-        updatedReports,
-        searchQuery,
-        activeFilterType,
-        activeDateFilter,
-        selectedViolations,
-        selectedPlateTypes
-      );
+      applyAllFilters();
 
       // Force list re-render
       setListKey((prev) => prev + 1);
 
       // Show success notification
-      showNotification("Report deleted successfully!", "success");
+      showNotification(t("search.deleteSuccess"), "success");
     } catch (error) {
       console.error("Error deleting report:", error);
-      showNotification("Failed to delete report. Please try again.", "error");
+      showNotification(t("search.deleteError"), "error");
     }
   };
 
@@ -341,19 +282,18 @@ export default function SearchScreen() {
       {/* Search Filters */}
       <SearchFilters
         searchQuery={searchQuery}
-        onSearchChange={filterReports}
-        activeFilterType={activeFilterType}
-        onFilterTypeChange={setFilterType}
-        activeDateFilter={activeDateFilter}
-        onDateFilterChange={setDateFilter}
-        selectedViolations={selectedViolations}
-        onViolationToggle={toggleViolationFilter}
-        selectedPlateTypes={selectedPlateTypes}
-        onPlateTypeToggle={togglePlateTypeFilter}
-        onClearAllFilters={clearAllFilters}
+        onSearchChange={setSearchQuery}
+        searchType={activeFilterType}
+        onSearchTypeChange={setActiveFilterType}
+        dateFilter={activeDateFilter}
+        onDateFilterChange={setActiveDateFilter}
+        plateTypeFilters={selectedPlateTypes}
+        onPlateTypeFiltersChange={setSelectedPlateTypes}
+        violationFilters={selectedViolations}
+        onViolationFiltersChange={setSelectedViolations}
+        onClearFilters={clearAllFilters}
+        reportsCount={filteredReports.length}
         hasActiveFilters={hasActiveFilters()}
-        reportsCount={reports.length}
-        filteredCount={filteredReports.length}
       />
 
       {/* Search Results */}
@@ -371,10 +311,10 @@ export default function SearchScreen() {
       {/* Confirm Dialog */}
       <ConfirmDialog
         visible={confirmDialog.visible}
-        title="Delete Report"
-        message="Are you sure you want to delete this report? This action cannot be undone."
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t("search.deleteConfirmTitle")}
+        message={t("search.deleteConfirmMessage")}
+        confirmText={t("search.deleteConfirmButton")}
+        cancelText={t("search.deleteCancelButton")}
         type="danger"
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}

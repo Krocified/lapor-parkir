@@ -1,26 +1,29 @@
 import React from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
+import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../styles/colors";
 
 const PlateNumberInput = ({ plateNumber, onPlateNumberChange, plateError }) => {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.section}>
       <Text
         style={[styles.sectionTitle, plateError && styles.sectionTitleError]}
       >
-        License Plate Number *
+        {t("report.plateNumber")} {t("report.plateNumberRequired")}
       </Text>
       <TextInput
         style={[styles.plateInput, plateError && styles.inputError]}
         value={plateNumber}
         onChangeText={onPlateNumberChange}
-        placeholder="Enter plate number (e.g., ABC1234)"
+        placeholder={t("report.plateNumberPlaceholder")}
         placeholderTextColor={semanticColors.inputPlaceholder}
         autoCapitalize="characters"
         maxLength={10}
       />
       {plateError && (
-        <Text style={styles.errorText}>Plate number is required</Text>
+        <Text style={styles.errorText}>{t("report.plateNumberError")}</Text>
       )}
     </View>
   );

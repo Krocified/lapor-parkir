@@ -1,15 +1,18 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../styles/colors";
 
 const LocationSelector = ({ location, onLocationPress, locationError }) => {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.section}>
       <Text
         style={[styles.sectionTitle, locationError && styles.sectionTitleError]}
       >
-        Location *
+        {t("report.location")} {t("report.locationRequired")}
       </Text>
       <TouchableOpacity
         style={[
@@ -24,7 +27,7 @@ const LocationSelector = ({ location, onLocationPress, locationError }) => {
             {location ? (
               <>
                 <Text style={styles.locationSelectedText}>
-                  Location Selected
+                  {t("report.locationSelected")}
                 </Text>
                 <Text style={styles.locationAddressText} numberOfLines={2}>
                   {location.address}
@@ -32,7 +35,7 @@ const LocationSelector = ({ location, onLocationPress, locationError }) => {
               </>
             ) : (
               <Text style={styles.locationPlaceholderText}>
-                Tap to select violation location
+                {t("report.locationPlaceholder")}
               </Text>
             )}
           </View>
@@ -44,7 +47,7 @@ const LocationSelector = ({ location, onLocationPress, locationError }) => {
         </View>
       </TouchableOpacity>
       {locationError && (
-        <Text style={styles.errorText}>Location is required</Text>
+        <Text style={styles.errorText}>{t("report.locationError")}</Text>
       )}
     </View>
   );

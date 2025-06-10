@@ -1,21 +1,19 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../styles/colors";
+import { getViolationLabel } from "../../i18n/translations";
 
 const VIOLATION_TYPES = [
-  { id: "double_parking", label: "Double Parking", icon: "car-outline" },
-  { id: "no_parking_zone", label: "No Parking Zone", icon: "ban-outline" },
-  {
-    id: "handicap_spot",
-    label: "Illegal Handicap Parking",
-    icon: "accessibility-outline",
-  },
-  { id: "fire_hydrant", label: "Blocking Fire Hydrant", icon: "flame-outline" },
-  { id: "crosswalk", label: "Blocking Crosswalk", icon: "walk-outline" },
-  { id: "expired_meter", label: "Expired Meter", icon: "time-outline" },
-  { id: "blocking_driveway", label: "Blocking Driveway", icon: "home-outline" },
-  { id: "no_stopping", label: "No Stopping Zone", icon: "stop-circle-outline" },
+  { id: "double_parking", icon: "car-outline" },
+  { id: "no_parking_zone", icon: "ban-outline" },
+  { id: "handicap_spot", icon: "accessibility-outline" },
+  { id: "fire_hydrant", icon: "flame-outline" },
+  { id: "crosswalk", icon: "walk-outline" },
+  { id: "expired_meter", icon: "time-outline" },
+  { id: "blocking_driveway", icon: "home-outline" },
+  { id: "no_stopping", icon: "stop-circle-outline" },
 ];
 
 const ViolationTypeSelector = ({
@@ -23,6 +21,8 @@ const ViolationTypeSelector = ({
   onToggleViolation,
   violationsError,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.section}>
       <Text
@@ -31,9 +31,11 @@ const ViolationTypeSelector = ({
           violationsError && styles.sectionTitleError,
         ]}
       >
-        Violation Type(s) *
+        {t("report.violationType")} {t("report.violationTypeRequired")}
       </Text>
-      <Text style={styles.sectionSubtitle}>Select all that apply</Text>
+      <Text style={styles.sectionSubtitle}>
+        {t("report.violationTypeSubtitle")}
+      </Text>
       <View
         style={[
           styles.violationsGrid,
@@ -66,15 +68,13 @@ const ViolationTypeSelector = ({
                   styles.violationTextSelected,
               ]}
             >
-              {violation.label}
+              {getViolationLabel(violation.id, t)}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
       {violationsError && (
-        <Text style={styles.errorText}>
-          Please select at least one violation type
-        </Text>
+        <Text style={styles.errorText}>{t("report.violationTypeError")}</Text>
       )}
     </View>
   );

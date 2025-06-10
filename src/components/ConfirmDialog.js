@@ -1,18 +1,25 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../styles/colors";
 
 const ConfirmDialog = ({
   visible,
   title,
   message,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
+  confirmText,
+  cancelText,
   onConfirm,
   onCancel,
   type = "danger", // danger, warning, info
 }) => {
+  const { t } = useTranslation();
+
+  // Use translations for default values if not provided
+  const finalConfirmText = confirmText || t("dialogs.confirm");
+  const finalCancelText = cancelText || t("dialogs.cancel");
+
   if (!visible) return null;
 
   const getIconName = () => {
@@ -64,7 +71,7 @@ const ConfirmDialog = ({
               style={[styles.button, styles.cancelButton]}
               onPress={onCancel}
             >
-              <Text style={styles.cancelButtonText}>{cancelText}</Text>
+              <Text style={styles.cancelButtonText}>{finalCancelText}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -75,7 +82,7 @@ const ConfirmDialog = ({
               ]}
               onPress={onConfirm}
             >
-              <Text style={styles.confirmButtonText}>{confirmText}</Text>
+              <Text style={styles.confirmButtonText}>{finalConfirmText}</Text>
             </TouchableOpacity>
           </View>
         </View>

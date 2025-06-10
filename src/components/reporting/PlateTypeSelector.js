@@ -1,8 +1,10 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../styles/colors";
 import { PLATE_TYPES } from "../../constants/plateTypes";
+import { getPlateTypeLabel } from "../../i18n/translations";
 
 const PlateTypeSelector = ({
   plateType,
@@ -10,6 +12,8 @@ const PlateTypeSelector = ({
   plateTypeExpanded,
   onToggleExpanded,
 }) => {
+  const { t } = useTranslation();
+
   const getCurrentPlateType = () => {
     return PLATE_TYPES.find((type) => type.id === plateType) || PLATE_TYPES[0];
   };
@@ -23,7 +27,7 @@ const PlateTypeSelector = ({
       >
         <View style={styles.plateTypeHeaderContent}>
           <Text style={[styles.sectionTitle, styles.plateTypeSectionTitle]}>
-            Plate Type
+            {t("report.plateType")}
           </Text>
           <View style={styles.plateTypeHeaderRight}>
             <View style={styles.currentPlateTypeIndicator}>
@@ -40,7 +44,7 @@ const PlateTypeSelector = ({
                   },
                 ]}
               >
-                {getCurrentPlateType().label}
+                {getPlateTypeLabel(getCurrentPlateType().id, t)}
               </Text>
             </View>
             <Ionicons
@@ -55,7 +59,7 @@ const PlateTypeSelector = ({
       {plateTypeExpanded && (
         <>
           <Text style={styles.sectionSubtitle}>
-            Select the type of license plate
+            {t("report.plateTypeSubtitle")}
           </Text>
           <View style={styles.plateTypesGrid}>
             {PLATE_TYPES.map((type) => (
@@ -81,7 +85,7 @@ const PlateTypeSelector = ({
                     },
                   ]}
                 >
-                  {type.label}
+                  {getPlateTypeLabel(type.id, t)}
                 </Text>
               </TouchableOpacity>
             ))}

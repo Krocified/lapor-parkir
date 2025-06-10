@@ -8,6 +8,7 @@ import {
   Animated,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from "react-i18next";
 import LocationPicker from "../components/LocationPicker";
 import InAppNotification from "../components/InAppNotification";
 import PlateNumberInput from "../components/reporting/PlateNumberInput";
@@ -19,6 +20,8 @@ import SubmitButton from "../components/reporting/SubmitButton";
 import colors from "../styles/colors";
 
 export default function ReportScreen() {
+  const { t } = useTranslation();
+
   const [plateNumber, setPlateNumber] = useState("");
   const [plateType, setPlateType] = useState("regular");
   const [selectedViolations, setSelectedViolations] = useState([]);
@@ -116,7 +119,7 @@ export default function ReportScreen() {
     }
 
     if (!isValid) {
-      showNotification("Please fill in all required fields", "error");
+      showNotification(t("report.validationError"), "error");
     }
 
     return isValid;
@@ -157,10 +160,10 @@ export default function ReportScreen() {
       resetForm();
 
       // Show success notification
-      showNotification("Report submitted successfully!", "success");
+      showNotification(t("report.submitSuccess"), "success");
     } catch (error) {
       console.error("Error saving report:", error);
-      showNotification("Failed to save report. Please try again.", "error");
+      showNotification(t("report.submitError"), "error");
     } finally {
       setIsSubmitting(false);
     }

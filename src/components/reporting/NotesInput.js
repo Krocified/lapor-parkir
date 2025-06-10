@@ -1,16 +1,19 @@
 import React from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
+import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../styles/colors";
 
 const NotesInput = ({ notes, onNotesChange }) => {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Additional Notes (Optional)</Text>
+      <Text style={styles.sectionTitle}>{t("report.notes")}</Text>
       <TextInput
         style={styles.notesInput}
         value={notes}
         onChangeText={onNotesChange}
-        placeholder="Add any additional details about the violation..."
+        placeholder={t("report.notesPlaceholder")}
         placeholderTextColor={semanticColors.inputPlaceholder}
         multiline
         numberOfLines={4}

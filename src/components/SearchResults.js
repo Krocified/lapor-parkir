@@ -8,19 +8,10 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../styles/colors";
 import { PLATE_TYPES, getPlateTypeInfo } from "../constants/plateTypes";
-
-const VIOLATION_LABELS = {
-  double_parking: "Double Parking",
-  no_parking_zone: "No Parking Zone",
-  handicap_spot: "Illegal Handicap Parking",
-  fire_hydrant: "Blocking Fire Hydrant",
-  crosswalk: "Blocking Crosswalk",
-  expired_meter: "Expired Meter",
-  blocking_driveway: "Blocking Driveway",
-  no_stopping: "No Stopping Zone",
-};
+import { getViolationLabel, getPlateTypeLabel } from "../i18n/translations";
 
 const SearchResults = ({
   reports,
@@ -32,8 +23,10 @@ const SearchResults = ({
   onClearAllFilters,
   listKey,
 }) => {
+  const { t } = useTranslation();
+
   const formatViolations = (violations) => {
-    return violations.map((id) => VIOLATION_LABELS[id]).join(", ");
+    return violations.map((id) => getViolationLabel(id, t)).join(", ");
   };
 
   const renderPlateTypeBadge = (plateType) => {
@@ -45,7 +38,9 @@ const SearchResults = ({
         style={[styles.plateTypeBadge, { backgroundColor: typeInfo.color }]}
       >
         <Ionicons name={typeInfo.icon} size={12} color={colors.white} />
-        <Text style={styles.plateTypeBadgeText}>{typeInfo.label}</Text>
+        <Text style={styles.plateTypeBadgeText}>
+          {getPlateTypeLabel(plateType, t)}
+        </Text>
       </View>
     );
   };
@@ -112,12 +107,14 @@ const SearchResults = ({
     <View style={styles.emptyState}>
       <Ionicons name="document-outline" size={64} color={colors.disabled} />
       <Text style={styles.emptyTitle}>
-        {hasActiveFilters ? "No matching reports found" : "No reports yet"}
+        {hasActiveFilters
+          ? t("search.noMatchingReports")
+          : t("search.noReports")}
       </Text>
       <Text style={styles.emptySubtitle}>
         {hasActiveFilters
-          ? "Try adjusting your search terms or filters"
-          : "Start by reporting a parking violation in the Report tab"}
+          ? t("search.noMatchingReportsSubtitle")
+          : t("search.noReportsSubtitle")}
       </Text>
       {hasActiveFilters && (
         <TouchableOpacity
@@ -133,7 +130,7 @@ const SearchResults = ({
   const renderLoadingState = () => (
     <View style={styles.loadingContainer}>
       <Ionicons name="hourglass-outline" size={32} color={colors.primary} />
-      <Text style={styles.loadingText}>Loading reports...</Text>
+      <Text style={styles.loadingText}>{t("search.loadingReports")}</Text>
     </View>
   );
 
