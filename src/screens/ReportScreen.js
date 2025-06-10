@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
-  Alert,
   KeyboardAvoidingView,
   Platform,
+  Animated,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LocationPicker from "../components/LocationPicker";
+import InAppNotification from "../components/InAppNotification";
 
 const VIOLATION_TYPES = [
   { id: "double_parking", label: "Double Parking", icon: "car-outline" },
@@ -37,16 +38,66 @@ export default function ReportScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showLocationPicker, setShowLocationPicker] = useState(false);
 
+  // Notification state
+  const [notification, setNotification] = useState(null);
+  const [notificationAnim] = useState(new Animated.Value(0));
+
+  // Validation states
+  const [plateError, setPlateError] = useState(false);
+  const [violationsError, setViolationsError] = useState(false);
+  const [locationError, setLocationError] = useState(false);
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ message, type });
+    Animated.sequence([
+      Animated.timing(notificationAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.delay(3000),
+      Animated.timing(notificationAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setNotification(null);
+    });
+  };
+
+  const clearErrors = () => {
+    setPlateError(false);
+    setViolationsError(false);
+    setLocationError(false);
+  };
+
   const toggleViolation = (violationId) => {
     setSelectedViolations((prev) =>
       prev.includes(violationId)
         ? prev.filter((id) => id !== violationId)
         : [...prev, violationId]
     );
+    // Clear violations error when user selects a violation
+    if (violationsError) {
+      setViolationsError(false);
+    }
   };
 
   const handleLocationSelect = (selectedLocation) => {
     setLocation(selectedLocation);
+    // Clear location error when user selects a location
+    if (locationError) {
+      setLocationError(false);
+    }
+  };
+
+  const handlePlateChange = (text) => {
+    setPlateNumber(text);
+    // Clear plate error when user starts typing
+    if (plateError) {
+      setPlateError(false);
+    }
   };
 
   const openLocationPicker = () => {
@@ -58,19 +109,27 @@ export default function ReportScreen() {
   };
 
   const validateForm = () => {
+    clearErrors();
+    let isValid = true;
+
     if (!plateNumber.trim()) {
-      Alert.alert("Error", "Please enter a plate number");
-      return false;
+      setPlateError(true);
+      isValid = false;
     }
     if (selectedViolations.length === 0) {
-      Alert.alert("Error", "Please select at least one violation type");
-      return false;
+      setViolationsError(true);
+      isValid = false;
     }
     if (!location) {
-      Alert.alert("Error", "Please select a location for the violation");
-      return false;
+      setLocationError(true);
+      isValid = false;
     }
-    return true;
+
+    if (!isValid) {
+      showNotification("Please fill in all required fields", "error");
+    }
+
+    return isValid;
   };
 
   const submitReport = async () => {
@@ -103,14 +162,14 @@ export default function ReportScreen() {
       // Save back to storage
       await AsyncStorage.setItem("parking_reports", JSON.stringify(reports));
 
-      Alert.alert(
-        "Success",
-        "Parking violation report submitted successfully!",
-        [{ text: "OK", onPress: resetForm }]
-      );
+      // Reset form first
+      resetForm();
+
+      // Show success notification
+      showNotification("Report submitted successfully!", "success");
     } catch (error) {
       console.error("Error saving report:", error);
-      Alert.alert("Error", "Failed to save report. Please try again.");
+      showNotification("Failed to save report. Please try again.", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -121,6 +180,16 @@ export default function ReportScreen() {
     setSelectedViolations([]);
     setNotes("");
     setLocation(null);
+    clearErrors();
+  };
+
+  const renderNotification = () => {
+    return (
+      <InAppNotification
+        notification={notification}
+        animationValue={notificationAnim}
+      />
+    );
   };
 
   return (
@@ -128,6 +197,8 @@ export default function ReportScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
+      {renderNotification()}
+
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -135,23 +206,45 @@ export default function ReportScreen() {
         <View style={styles.content}>
           {/* Plate Number Input */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>License Plate Number</Text>
+            <Text
+              style={[
+                styles.sectionTitle,
+                plateError && styles.sectionTitleError,
+              ]}
+            >
+              License Plate Number *
+            </Text>
             <TextInput
-              style={styles.plateInput}
+              style={[styles.plateInput, plateError && styles.inputError]}
               value={plateNumber}
-              onChangeText={setPlateNumber}
+              onChangeText={handlePlateChange}
               placeholder="Enter plate number (e.g., ABC1234)"
               placeholderTextColor="#999"
               autoCapitalize="characters"
               maxLength={10}
             />
+            {plateError && (
+              <Text style={styles.errorText}>Plate number is required</Text>
+            )}
           </View>
 
           {/* Violation Types */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Violation Type(s)</Text>
+            <Text
+              style={[
+                styles.sectionTitle,
+                violationsError && styles.sectionTitleError,
+              ]}
+            >
+              Violation Type(s) *
+            </Text>
             <Text style={styles.sectionSubtitle}>Select all that apply</Text>
-            <View style={styles.violationsGrid}>
+            <View
+              style={[
+                styles.violationsGrid,
+                violationsError && styles.violationsGridError,
+              ]}
+            >
               {VIOLATION_TYPES.map((violation) => (
                 <TouchableOpacity
                   key={violation.id}
@@ -183,13 +276,28 @@ export default function ReportScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            {violationsError && (
+              <Text style={styles.errorText}>
+                Please select at least one violation type
+              </Text>
+            )}
           </View>
 
           {/* Location Picker */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Location</Text>
+            <Text
+              style={[
+                styles.sectionTitle,
+                locationError && styles.sectionTitleError,
+              ]}
+            >
+              Location *
+            </Text>
             <TouchableOpacity
-              style={styles.locationPickerButton}
+              style={[
+                styles.locationPickerButton,
+                locationError && styles.inputError,
+              ]}
               onPress={openLocationPicker}
             >
               <View style={styles.locationPickerContent}>
@@ -216,6 +324,9 @@ export default function ReportScreen() {
                 <Ionicons name="chevron-forward" size={20} color="#666" />
               </View>
             </TouchableOpacity>
+            {locationError && (
+              <Text style={styles.errorText}>Location is required</Text>
+            )}
           </View>
 
           {/* Additional Notes */}
@@ -387,5 +498,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginLeft: 8,
+  },
+  sectionTitleError: {
+    color: "#e74c3c",
+  },
+  inputError: {
+    borderColor: "#e74c3c",
+    borderWidth: 2,
+  },
+  errorText: {
+    color: "#e74c3c",
+    fontSize: 12,
+    marginTop: 5,
+    fontWeight: "500",
+  },
+  violationsGridError: {
+    borderWidth: 2,
+    borderColor: "#e74c3c",
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: "#ffeaea",
   },
 });
