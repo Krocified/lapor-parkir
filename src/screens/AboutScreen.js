@@ -10,6 +10,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../styles/colors";
+import { config } from "../config/env";
 
 export default function AboutScreen() {
   const { t } = useTranslation();
@@ -112,15 +113,15 @@ export default function AboutScreen() {
 
           <TouchableOpacity
             style={styles.contactItem}
-            onPress={() => openLink("mailto:support@laporparkir.com")}
+            onPress={() => openLink(`mailto:${config.supportEmail}`)}
           >
             <Ionicons name="mail-outline" size={20} color={colors.primary} />
-            <Text style={styles.contactText}>support@laporparkir.com</Text>
+            <Text style={styles.contactText}>{config.supportEmail}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.contactItem}
-            onPress={() => openLink("https://github.com/laporparkir")}
+            onPress={() => openLink(config.githubUrl)}
           >
             <Ionicons name="logo-github" size={20} color={colors.primary} />
             <Text style={styles.contactText}>GitHub Repository</Text>
@@ -136,18 +137,6 @@ export default function AboutScreen() {
               "This app is for community use only. Please verify all reports with local authorities before taking any action."
             )}
           </Text>
-
-          <TouchableOpacity style={styles.linkItem}>
-            <Text style={styles.linkText}>
-              {t("about.privacyPolicy", "Privacy Policy")}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.linkItem}>
-            <Text style={styles.linkText}>
-              {t("about.termsOfService", "Terms of Service")}
-            </Text>
-          </TouchableOpacity>
         </View>
 
         {/* Attribution */}
@@ -156,7 +145,7 @@ export default function AboutScreen() {
             {t("about.madeWith", "Made with ❤️ for better cities")}
           </Text>
           <Text style={styles.copyright}>
-            © 2024 Lapor Parkir.{" "}
+            © 2025 Lapor Parkir.{" "}
             {t("about.allRightsReserved", "All rights reserved.")}
           </Text>
         </View>
