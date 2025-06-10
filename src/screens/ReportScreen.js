@@ -1,36 +1,22 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Text,
-  TextInput,
-  TouchableOpacity,
   ScrollView,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   Animated,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LocationPicker from "../components/LocationPicker";
 import InAppNotification from "../components/InAppNotification";
-import colors, { semanticColors } from "../styles/colors";
-import { PLATE_TYPES } from "../constants/plateTypes";
-
-const VIOLATION_TYPES = [
-  { id: "double_parking", label: "Double Parking", icon: "car-outline" },
-  { id: "no_parking_zone", label: "No Parking Zone", icon: "ban-outline" },
-  {
-    id: "handicap_spot",
-    label: "Illegal Handicap Parking",
-    icon: "accessibility-outline",
-  },
-  { id: "fire_hydrant", label: "Blocking Fire Hydrant", icon: "flame-outline" },
-  { id: "crosswalk", label: "Blocking Crosswalk", icon: "walk-outline" },
-  { id: "expired_meter", label: "Expired Meter", icon: "time-outline" },
-  { id: "blocking_driveway", label: "Blocking Driveway", icon: "home-outline" },
-  { id: "no_stopping", label: "No Stopping Zone", icon: "stop-circle-outline" },
-];
+import PlateNumberInput from "../components/reporting/PlateNumberInput";
+import PlateTypeSelector from "../components/reporting/PlateTypeSelector";
+import ViolationTypeSelector from "../components/reporting/ViolationTypeSelector";
+import LocationSelector from "../components/reporting/LocationSelector";
+import NotesInput from "../components/reporting/NotesInput";
+import SubmitButton from "../components/reporting/SubmitButton";
+import colors from "../styles/colors";
 
 export default function ReportScreen() {
   const [plateNumber, setPlateNumber] = useState("");
@@ -40,6 +26,7 @@ export default function ReportScreen() {
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showLocationPicker, setShowLocationPicker] = useState(false);
+  const [plateTypeExpanded, setPlateTypeExpanded] = useState(false);
 
   // Notification state
   const [notification, setNotification] = useState(null);
@@ -185,6 +172,7 @@ export default function ReportScreen() {
     setSelectedViolations([]);
     setNotes("");
     setLocation(null);
+    setPlateTypeExpanded(false);
     clearErrors();
   };
 
@@ -209,212 +197,34 @@ export default function ReportScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.content}>
-          {/* Plate Number Input */}
-          <View style={styles.section}>
-            <Text
-              style={[
-                styles.sectionTitle,
-                plateError && styles.sectionTitleError,
-              ]}
-            >
-              License Plate Number *
-            </Text>
-            <TextInput
-              style={[styles.plateInput, plateError && styles.inputError]}
-              value={plateNumber}
-              onChangeText={handlePlateChange}
-              placeholder="Enter plate number (e.g., ABC1234)"
-              placeholderTextColor={semanticColors.inputPlaceholder}
-              autoCapitalize="characters"
-              maxLength={10}
-            />
-            {plateError && (
-              <Text style={styles.errorText}>Plate number is required</Text>
-            )}
-          </View>
+          <PlateNumberInput
+            plateNumber={plateNumber}
+            onPlateNumberChange={handlePlateChange}
+            plateError={plateError}
+          />
 
-          {/* Plate Type Selection */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Plate Type</Text>
-            <Text style={styles.sectionSubtitle}>
-              Select the type of license plate
-            </Text>
-            <View style={styles.plateTypesGrid}>
-              {PLATE_TYPES.map((type) => (
-                <TouchableOpacity
-                  key={type.id}
-                  style={[
-                    styles.plateTypeItem,
-                    plateType === type.id && styles.plateTypeItemSelected,
-                  ]}
-                  onPress={() => setPlateType(type.id)}
-                >
-                  <Ionicons
-                    name={type.icon}
-                    size={20}
-                    color={plateType === type.id ? colors.white : type.color}
-                  />
-                  <Text
-                    style={[
-                      styles.plateTypeText,
-                      plateType === type.id && styles.plateTypeTextSelected,
-                      {
-                        color:
-                          plateType === type.id ? colors.white : type.color,
-                      },
-                    ]}
-                  >
-                    {type.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
+          <PlateTypeSelector
+            plateType={plateType}
+            onPlateTypeChange={setPlateType}
+            plateTypeExpanded={plateTypeExpanded}
+            onToggleExpanded={() => setPlateTypeExpanded(!plateTypeExpanded)}
+          />
 
-          {/* Violation Types */}
-          <View style={styles.section}>
-            <Text
-              style={[
-                styles.sectionTitle,
-                violationsError && styles.sectionTitleError,
-              ]}
-            >
-              Violation Type(s) *
-            </Text>
-            <Text style={styles.sectionSubtitle}>Select all that apply</Text>
-            <View
-              style={[
-                styles.violationsGrid,
-                violationsError && styles.violationsGridError,
-              ]}
-            >
-              {VIOLATION_TYPES.map((violation) => (
-                <TouchableOpacity
-                  key={violation.id}
-                  style={[
-                    styles.violationItem,
-                    selectedViolations.includes(violation.id) &&
-                      styles.violationItemSelected,
-                  ]}
-                  onPress={() => toggleViolation(violation.id)}
-                >
-                  <Ionicons
-                    name={violation.icon}
-                    size={24}
-                    color={
-                      selectedViolations.includes(violation.id)
-                        ? colors.white
-                        : colors.primary
-                    }
-                  />
-                  <Text
-                    style={[
-                      styles.violationText,
-                      selectedViolations.includes(violation.id) &&
-                        styles.violationTextSelected,
-                    ]}
-                  >
-                    {violation.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            {violationsError && (
-              <Text style={styles.errorText}>
-                Please select at least one violation type
-              </Text>
-            )}
-          </View>
+          <ViolationTypeSelector
+            selectedViolations={selectedViolations}
+            onToggleViolation={toggleViolation}
+            violationsError={violationsError}
+          />
 
-          {/* Location Picker */}
-          <View style={styles.section}>
-            <Text
-              style={[
-                styles.sectionTitle,
-                locationError && styles.sectionTitleError,
-              ]}
-            >
-              Location *
-            </Text>
-            <TouchableOpacity
-              style={[
-                styles.locationPickerButton,
-                locationError && styles.inputError,
-              ]}
-              onPress={openLocationPicker}
-            >
-              <View style={styles.locationPickerContent}>
-                <Ionicons
-                  name="location-outline"
-                  size={20}
-                  color={colors.primary}
-                />
-                <View style={styles.locationTextContainer}>
-                  {location ? (
-                    <>
-                      <Text style={styles.locationSelectedText}>
-                        Location Selected
-                      </Text>
-                      <Text
-                        style={styles.locationAddressText}
-                        numberOfLines={2}
-                      >
-                        {location.address}
-                      </Text>
-                    </>
-                  ) : (
-                    <Text style={styles.locationPlaceholderText}>
-                      Tap to select violation location
-                    </Text>
-                  )}
-                </View>
-                <Ionicons
-                  name="chevron-forward"
-                  size={20}
-                  color={colors.textSecondary}
-                />
-              </View>
-            </TouchableOpacity>
-            {locationError && (
-              <Text style={styles.errorText}>Location is required</Text>
-            )}
-          </View>
+          <LocationSelector
+            location={location}
+            onLocationPress={openLocationPicker}
+            locationError={locationError}
+          />
 
-          {/* Additional Notes */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Additional Notes (Optional)</Text>
-            <TextInput
-              style={styles.notesInput}
-              value={notes}
-              onChangeText={setNotes}
-              placeholder="Add any additional details about the violation..."
-              placeholderTextColor={semanticColors.inputPlaceholder}
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-            />
-          </View>
+          <NotesInput notes={notes} onNotesChange={setNotes} />
 
-          {/* Submit Button */}
-          <TouchableOpacity
-            style={[
-              styles.submitButton,
-              isSubmitting && styles.submitButtonDisabled,
-            ]}
-            onPress={submitReport}
-            disabled={isSubmitting}
-          >
-            <Ionicons
-              name={
-                isSubmitting ? "hourglass-outline" : "checkmark-circle-outline"
-              }
-              size={20}
-              color={colors.white}
-            />
-            <Text style={styles.submitButtonText}>
-              {isSubmitting ? "Submitting..." : "Submit Report"}
-            </Text>
-          </TouchableOpacity>
+          <SubmitButton onSubmit={submitReport} isSubmitting={isSubmitting} />
         </View>
       </ScrollView>
 
@@ -440,162 +250,5 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
     paddingBottom: 40,
-  },
-  section: {
-    marginBottom: 25,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.textPrimary,
-    marginBottom: 8,
-  },
-  sectionSubtitle: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginBottom: 12,
-  },
-  plateInput: {
-    backgroundColor: semanticColors.inputBackground,
-    borderRadius: 10,
-    padding: 15,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: semanticColors.inputBorder,
-    textAlign: "center",
-    fontWeight: "bold",
-    letterSpacing: 2,
-  },
-  plateTypesGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  plateTypeItem: {
-    backgroundColor: semanticColors.inputBackground,
-    borderRadius: 10,
-    padding: 15,
-    alignItems: "center",
-    minWidth: "45%",
-    borderWidth: 2,
-    borderColor: colors.primary,
-  },
-  plateTypeItemSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primaryDark,
-  },
-  plateTypeText: {
-    marginTop: 8,
-    fontSize: 12,
-    color: colors.textPrimary,
-    textAlign: "center",
-    fontWeight: "500",
-  },
-  plateTypeTextSelected: {
-    color: colors.white,
-  },
-  violationsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  violationItem: {
-    backgroundColor: semanticColors.inputBackground,
-    borderRadius: 10,
-    padding: 15,
-    alignItems: "center",
-    minWidth: "45%",
-    borderWidth: 2,
-    borderColor: colors.primary,
-  },
-  violationItemSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primaryDark,
-  },
-  violationText: {
-    marginTop: 8,
-    fontSize: 12,
-    color: colors.textPrimary,
-    textAlign: "center",
-    fontWeight: "500",
-  },
-  violationTextSelected: {
-    color: colors.white,
-  },
-  locationPickerButton: {
-    backgroundColor: semanticColors.inputBackground,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: semanticColors.inputBorder,
-  },
-  locationPickerContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 15,
-  },
-  locationTextContainer: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  locationSelectedText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: semanticColors.successText,
-    marginBottom: 2,
-  },
-  locationAddressText: {
-    fontSize: 12,
-    color: colors.textSecondary,
-  },
-  locationPlaceholderText: {
-    fontSize: 14,
-    color: semanticColors.inputPlaceholder,
-  },
-  notesInput: {
-    backgroundColor: semanticColors.inputBackground,
-    borderRadius: 10,
-    padding: 15,
-    fontSize: 14,
-    borderWidth: 1,
-    borderColor: semanticColors.inputBorder,
-    minHeight: 100,
-  },
-  submitButton: {
-    backgroundColor: colors.success,
-    borderRadius: 10,
-    padding: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  submitButtonDisabled: {
-    backgroundColor: semanticColors.buttonDisabled,
-  },
-  submitButtonText: {
-    color: semanticColors.buttonPrimaryText,
-    fontSize: 16,
-    fontWeight: "bold",
-    marginLeft: 8,
-  },
-  sectionTitleError: {
-    color: colors.error,
-  },
-  inputError: {
-    borderColor: semanticColors.inputBorderError,
-    borderWidth: 2,
-  },
-  violationsGridError: {
-    borderWidth: 2,
-    borderColor: colors.error,
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: colors.errorLight,
-  },
-  errorText: {
-    color: colors.error,
-    fontSize: 12,
-    marginTop: 5,
-    fontWeight: "500",
   },
 });
