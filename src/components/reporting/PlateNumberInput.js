@@ -20,7 +20,7 @@ const PlateNumberInput = ({ plateNumber, onPlateNumberChange, plateError }) => {
         placeholder={t("report.plateNumberPlaceholder")}
         placeholderTextColor={semanticColors.inputPlaceholder}
         autoCapitalize="characters"
-        maxLength={10}
+        maxLength={25}
       />
       {plateError && (
         <Text style={styles.errorText}>{t("report.plateNumberError")}</Text>
