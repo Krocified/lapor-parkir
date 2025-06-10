@@ -10,10 +10,13 @@ import {
   RefreshControl,
   Modal,
   ScrollView,
+  Animated,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import InAppNotification from "../components/InAppNotification";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 const VIOLATION_LABELS = {
   double_parking: "Double Parking",
@@ -56,6 +59,33 @@ export default function SearchScreen() {
   const [selectedViolations, setSelectedViolations] = useState([]);
   const [showFilterModal, setShowFilterModal] = useState(false);
 
+  // Notification and dialog states
+  const [notification, setNotification] = useState(null);
+  const [notificationAnim] = useState(new Animated.Value(0));
+  const [confirmDialog, setConfirmDialog] = useState({
+    visible: false,
+    reportId: null,
+  });
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ message, type });
+    Animated.sequence([
+      Animated.timing(notificationAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.delay(3000),
+      Animated.timing(notificationAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setNotification(null);
+    });
+  };
+
   useFocusEffect(
     useCallback(() => {
       loadReports();
@@ -77,7 +107,7 @@ export default function SearchScreen() {
       );
     } catch (error) {
       console.error("Error loading reports:", error);
-      Alert.alert("Error", "Failed to load reports");
+      showNotification("Failed to load reports", "error");
     } finally {
       setIsLoading(false);
     }
@@ -244,12 +274,15 @@ export default function SearchScreen() {
   };
 
   const deleteReport = async (reportId) => {
-    // Use native confirm for web compatibility instead of Alert
-    const confirmed = confirm("Are you sure you want to delete this report?");
+    setConfirmDialog({
+      visible: true,
+      reportId: reportId,
+    });
+  };
 
-    if (!confirmed) {
-      return;
-    }
+  const handleConfirmDelete = async () => {
+    const { reportId } = confirmDialog;
+    setConfirmDialog({ visible: false, reportId: null });
 
     try {
       const updatedReports = reports.filter((report) => report.id !== reportId);
@@ -275,12 +308,16 @@ export default function SearchScreen() {
       // Force list re-render
       setListKey((prev) => prev + 1);
 
-      // Show success message with native alert for web compatibility
-      alert("Report deleted successfully!");
+      // Show success notification
+      showNotification("Report deleted successfully!", "success");
     } catch (error) {
       console.error("Error deleting report:", error);
-      alert("Failed to delete report. Please try again.");
+      showNotification("Failed to delete report. Please try again.", "error");
     }
+  };
+
+  const handleCancelDelete = () => {
+    setConfirmDialog({ visible: false, reportId: null });
   };
 
   const formatViolations = (violations) => {
@@ -543,6 +580,12 @@ export default function SearchScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Notification */}
+      <InAppNotification
+        notification={notification}
+        animationValue={notificationAnim}
+      />
+
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <Ionicons
@@ -603,6 +646,18 @@ export default function SearchScreen() {
 
       {/* Filter Modal */}
       {renderFilterModal()}
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        visible={confirmDialog.visible}
+        title="Delete Report"
+        message="Are you sure you want to delete this report? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </View>
   );
 }
