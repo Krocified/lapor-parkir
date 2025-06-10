@@ -36,7 +36,7 @@ function DrawerNavigator() {
           return <CustomHeader navigation={navigation} title={title} />;
         },
         drawerStyle: {
-          backgroundColor: "#F8FAFC",
+          backgroundColor: semanticColors.drawerBackground,
           width: 280,
         },
         drawerItemStyle: {
@@ -45,19 +45,19 @@ function DrawerNavigator() {
           paddingLeft: 0,
         },
         drawerLabelStyle: {
-          color: "#334155",
+          color: semanticColors.drawerText,
           fontSize: 16,
           marginLeft: 0,
         },
         drawerActiveTintColor: semanticColors.tabBarActive,
-        drawerActiveBackgroundColor: `${semanticColors.tabBarActive}15`,
-        drawerInactiveTintColor: "#64748B",
+        drawerActiveBackgroundColor: semanticColors.drawerActiveBackground,
+        drawerInactiveTintColor: semanticColors.drawerTextInactive,
         drawerContentStyle: {
           paddingVertical: 8,
           paddingLeft: 8,
         },
         drawerItemPressedStyle: {
-          backgroundColor: `${semanticColors.tabBarActive}15`,
+          backgroundColor: semanticColors.drawerItemHover,
         },
         drawerItemPressOpacity: 1,
       })}
@@ -87,7 +87,7 @@ function DrawerNavigator() {
           sectionStyle: {
             marginTop: 8,
             borderTopWidth: 1,
-            borderTopColor: "#E2E8F0",
+            borderTopColor: semanticColors.drawerSeparator,
             paddingTop: 8,
           },
         }}

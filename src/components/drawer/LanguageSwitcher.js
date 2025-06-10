@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: semanticColors.languageSwitcherButton,
     gap: 6,
     minWidth: 70,
   },
@@ -116,21 +116,21 @@ const styles = StyleSheet.create({
   languageCode: {
     fontSize: 12,
     fontWeight: "600",
-    color: semanticColors.headerText,
+    color: semanticColors.languageSwitcherText,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    backgroundColor: semanticColors.languageSwitcherOverlay,
     justifyContent: "flex-start",
     alignItems: "flex-end",
     paddingTop: 80,
     paddingRight: 15,
   },
   dropdownMenu: {
-    backgroundColor: "#fff",
+    backgroundColor: semanticColors.languageSwitcherDropdownBackground,
     borderRadius: 8,
     minWidth: 180,
-    shadowColor: "#000",
+    shadowColor: semanticColors.languageSwitcherShadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   dropdownItemActive: {
-    backgroundColor: "rgba(59, 130, 246, 0.1)",
+    backgroundColor: semanticColors.languageSwitcherActiveItem,
   },
   languageInfo: {
     flex: 1,
@@ -155,17 +155,17 @@ const styles = StyleSheet.create({
   languageName: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#333",
+    color: semanticColors.languageSwitcherDropdownText,
   },
   languageNameActive: {
-    color: semanticColors.tabBarActive,
+    color: semanticColors.languageSwitcherActiveText,
   },
   languageCodeSmall: {
     fontSize: 12,
-    color: "#666",
+    color: semanticColors.languageSwitcherDropdownTextSecondary,
   },
   languageCodeActiveSmall: {
-    color: semanticColors.tabBarActive,
+    color: semanticColors.languageSwitcherActiveText,
   },
 });
 

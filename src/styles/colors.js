@@ -66,9 +66,23 @@ export const semanticColors = {
   headerText: colors.white,
 
   // Drawer Navigation
-  drawerBackground: colors.surface,
+  drawerBackground: colors.surfaceSecondary,
   drawerText: colors.textPrimary,
   drawerTextInactive: colors.textSecondary,
+  drawerActiveBackground: `${colors.primary}15`,
+  drawerItemHover: `${colors.primary}10`,
+  drawerSeparator: colors.borderLight,
+
+  // Language Switcher
+  languageSwitcherButton: "rgba(255, 255, 255, 0.1)",
+  languageSwitcherText: colors.white,
+  languageSwitcherDropdownBackground: colors.surface,
+  languageSwitcherDropdownText: colors.textPrimary,
+  languageSwitcherDropdownTextSecondary: colors.textSecondary,
+  languageSwitcherActiveItem: `${colors.primary}10`,
+  languageSwitcherActiveText: colors.primary,
+  languageSwitcherOverlay: "rgba(0, 0, 0, 0.3)",
+  languageSwitcherShadow: colors.shadow,
 
   // Buttons
   buttonPrimary: colors.primary,
