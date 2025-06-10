@@ -1,29 +1,15 @@
 import React from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  RefreshControl,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import colors, { semanticColors } from "../styles/colors";
-import { getPlateTypeInfo } from "../constants/plateTypes";
-import { getViolationLabel, getPlateTypeLabel } from "../i18n/translations";
+import colors, { semanticColors } from "../../../styles/colors";
+import { getPlateTypeInfo } from "../../../constants/plateTypes";
+import {
+  getViolationLabel,
+  getPlateTypeLabel,
+} from "../../../i18n/translations";
 
-const SearchResults = ({
-  reports,
-  isLoading,
-  refreshing,
-  onRefresh,
-  onDeleteReport,
-  hasActiveFilters,
-  onClearAllFilters,
-  listKey,
-}) => {
+const ReportCard = React.memo(({ item, onDeleteReport }) => {
   const { t } = useTranslation();
 
   const formatViolations = (violations) => {
@@ -46,7 +32,7 @@ const SearchResults = ({
     );
   };
 
-  const renderReportCard = ({ item }) => (
+  return (
     <View style={styles.reportCard}>
       <View style={styles.reportHeader}>
         <View style={styles.plateSection}>
@@ -105,87 +91,9 @@ const SearchResults = ({
       </View>
     </View>
   );
-
-  const renderEmptyState = () => (
-    <View style={styles.emptyState}>
-      <Ionicons name="document-outline" size={64} color={colors.disabled} />
-      <Text style={styles.emptyTitle}>
-        {hasActiveFilters
-          ? t("search.noMatchingReports")
-          : t("search.noReports")}
-      </Text>
-      <Text style={styles.emptySubtitle}>
-        {hasActiveFilters
-          ? t("search.noMatchingReportsSubtitle")
-          : t("search.noReportsSubtitle")}
-      </Text>
-      {hasActiveFilters && (
-        <TouchableOpacity
-          style={styles.clearFiltersButton}
-          onPress={onClearAllFilters}
-        >
-          <Text style={styles.clearFiltersButtonText}>Clear All Filters</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-
-  const renderLoadingState = () => (
-    <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color={colors.primary} />
-      <Text style={styles.loadingText}>{t("search.loadingReports")}</Text>
-    </View>
-  );
-
-  if (isLoading) {
-    return renderLoadingState();
-  }
-
-  return (
-    <FlatList
-      key={listKey}
-      data={reports}
-      renderItem={renderReportCard}
-      keyExtractor={(item) => item.id}
-      style={styles.reportsList}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      ListEmptyComponent={renderEmptyState}
-      contentContainerStyle={
-        reports.length === 0 ? styles.emptyContainer : styles.listContainer
-      }
-      extraData={reports}
-    />
-  );
-};
+});
 
 const styles = StyleSheet.create({
-  reportsList: {
-    flex: 1,
-    paddingHorizontal: 15,
-    paddingTop: 0,
-  },
-  listContainer: {
-    paddingBottom: 20,
-    paddingTop: 0,
-  },
-  emptyContainer: {
-    flex: 1,
-    paddingTop: 0,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.background,
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: colors.textSecondary,
-  },
   reportCard: {
     backgroundColor: semanticColors.cardBackground,
     borderRadius: 12,
@@ -290,41 +198,6 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     lineHeight: 20,
   },
-  emptyState: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 40,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.textPrimary,
-    marginTop: 20,
-    textAlign: "center",
-  },
-  emptySubtitle: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    marginTop: 8,
-    textAlign: "center",
-    lineHeight: 20,
-  },
-  clearFiltersButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: colors.primary,
-    borderRadius: 8,
-    backgroundColor: colors.surface,
-    marginTop: 15,
-    alignItems: "center",
-  },
-  clearFiltersButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: colors.primary,
-  },
 });
 
-export default SearchResults;
+export default ReportCard;

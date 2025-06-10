@@ -101,16 +101,17 @@ const styles = StyleSheet.create({
   violationsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    justifyContent: "space-between",
   },
   violationItem: {
     backgroundColor: semanticColors.inputBackground,
     borderRadius: 10,
     padding: 15,
     alignItems: "center",
-    minWidth: "45%",
+    width: "48%",
     borderWidth: 2,
     borderColor: colors.primary,
+    marginBottom: 10,
   },
   violationItemSelected: {
     backgroundColor: colors.primary,
