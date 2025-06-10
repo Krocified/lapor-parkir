@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import InAppNotification from "../components/InAppNotification";
 import ConfirmDialog from "../components/ConfirmDialog";
+import colors, { semanticColors } from "../styles/colors";
 
 const VIOLATION_LABELS = {
   double_parking: "Double Parking",
@@ -335,20 +336,28 @@ export default function SearchScreen() {
           onPress={() => deleteReport(item.id)}
           activeOpacity={0.7}
         >
-          <Ionicons name="trash-outline" size={20} color="#e74c3c" />
+          <Ionicons name="trash-outline" size={20} color={colors.primary} />
         </TouchableOpacity>
       </View>
 
       <View style={styles.reportContent}>
         <View style={styles.infoRow}>
-          <Ionicons name="calendar-outline" size={16} color="#666" />
+          <Ionicons
+            name="calendar-outline"
+            size={16}
+            color={colors.textSecondary}
+          />
           <Text style={styles.infoText}>
             {item.date} at {item.time}
           </Text>
         </View>
 
         <View style={styles.infoRow}>
-          <Ionicons name="location-outline" size={16} color="#666" />
+          <Ionicons
+            name="location-outline"
+            size={16}
+            color={colors.textSecondary}
+          />
           <Text style={styles.infoText} numberOfLines={2}>
             {item.location.address}
           </Text>
@@ -413,7 +422,9 @@ export default function SearchScreen() {
         <Ionicons
           name="options-outline"
           size={14}
-          color={selectedViolations.length > 0 ? "#fff" : "#666"}
+          color={
+            selectedViolations.length > 0 ? colors.white : colors.textSecondary
+          }
         />
         <Text
           style={[
@@ -464,8 +475,12 @@ export default function SearchScreen() {
             style={[styles.filterChip, styles.clearFilterChip]}
             onPress={clearAllFilters}
           >
-            <Ionicons name="close-circle-outline" size={14} color="#e74c3c" />
-            <Text style={[styles.filterChipText, { color: "#e74c3c" }]}>
+            <Ionicons
+              name="close-circle-outline"
+              size={14}
+              color={colors.primary}
+            />
+            <Text style={[styles.filterChipText, { color: colors.primary }]}>
               Clear
             </Text>
           </TouchableOpacity>
@@ -486,7 +501,7 @@ export default function SearchScreen() {
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>Filter by Violations</Text>
             <TouchableOpacity onPress={() => setShowFilterModal(false)}>
-              <Ionicons name="close" size={24} color="#333" />
+              <Ionicons name="close" size={24} color={colors.textPrimary} />
             </TouchableOpacity>
           </View>
 
@@ -511,7 +526,7 @@ export default function SearchScreen() {
                   {label}
                 </Text>
                 {selectedViolations.includes(id) && (
-                  <Ionicons name="checkmark" size={20} color="#fff" />
+                  <Ionicons name="checkmark" size={20} color={colors.white} />
                 )}
               </TouchableOpacity>
             ))}
@@ -549,7 +564,7 @@ export default function SearchScreen() {
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
-      <Ionicons name="document-outline" size={64} color="#bdc3c7" />
+      <Ionicons name="document-outline" size={64} color={colors.disabled} />
       <Text style={styles.emptyTitle}>
         {hasActiveFilters() ? "No matching reports found" : "No reports yet"}
       </Text>
@@ -572,7 +587,7 @@ export default function SearchScreen() {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <Ionicons name="hourglass-outline" size={32} color="#e74c3c" />
+        <Ionicons name="hourglass-outline" size={32} color={colors.primary} />
         <Text style={styles.loadingText}>Loading reports...</Text>
       </View>
     );
@@ -591,7 +606,7 @@ export default function SearchScreen() {
         <Ionicons
           name="search-outline"
           size={20}
-          color="#999"
+          color={colors.textMuted}
           style={styles.searchIcon}
         />
         <TextInput
@@ -603,14 +618,14 @@ export default function SearchScreen() {
               ? "all fields"
               : activeFilterType
           }...`}
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.textMuted}
         />
         {searchQuery ? (
           <TouchableOpacity
             onPress={() => filterReports("")}
             style={styles.clearButton}
           >
-            <Ionicons name="close-circle" size={20} color="#999" />
+            <Ionicons name="close-circle" size={20} color={colors.textMuted} />
           </TouchableOpacity>
         ) : null}
       </View>
@@ -665,28 +680,28 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: colors.background,
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: "#666",
+    color: colors.textSecondary,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: semanticColors.inputBackground,
     margin: 15,
     borderRadius: 10,
     paddingHorizontal: 15,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: semanticColors.inputBorder,
   },
   searchIcon: {
     marginRight: 10,
@@ -705,7 +720,7 @@ const styles = StyleSheet.create({
   },
   statsText: {
     fontSize: 14,
-    color: "#666",
+    color: colors.textSecondary,
     fontWeight: "500",
   },
   reportsList: {
@@ -713,13 +728,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   reportCard: {
-    backgroundColor: "#fff",
+    backgroundColor: semanticColors.cardBackground,
     borderRadius: 12,
     padding: 15,
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: "#e0e0e0",
-    shadowColor: "#000",
+    borderColor: semanticColors.cardBorder,
+    shadowColor: colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -735,13 +750,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   plateContainer: {
-    backgroundColor: "#e74c3c",
+    backgroundColor: semanticColors.plateNumberBackground,
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 8,
   },
   plateNumber: {
-    color: "#fff",
+    color: semanticColors.plateNumberText,
     fontSize: 16,
     fontWeight: "bold",
     letterSpacing: 1,
@@ -749,9 +764,9 @@ const styles = StyleSheet.create({
   deleteButton: {
     padding: 8,
     borderRadius: 20,
-    backgroundColor: "#fff",
+    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: "#e74c3c",
+    borderColor: colors.primary,
   },
   reportContent: {
     gap: 10,
@@ -763,7 +778,7 @@ const styles = StyleSheet.create({
   infoText: {
     marginLeft: 8,
     fontSize: 14,
-    color: "#333",
+    color: colors.textPrimary,
     flex: 1,
   },
   violationsContainer: {
@@ -772,29 +787,29 @@ const styles = StyleSheet.create({
   violationsLabel: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#333",
+    color: colors.textPrimary,
     marginBottom: 4,
   },
   violationsText: {
     fontSize: 14,
-    color: "#e74c3c",
+    color: semanticColors.violationText,
     fontWeight: "500",
   },
   notesContainer: {
     marginTop: 5,
     padding: 10,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: colors.surfaceSecondary,
     borderRadius: 8,
   },
   notesLabel: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#333",
+    color: colors.textPrimary,
     marginBottom: 4,
   },
   notesText: {
     fontSize: 14,
-    color: "#666",
+    color: colors.textSecondary,
     lineHeight: 20,
   },
   emptyContainer: {
@@ -809,13 +824,13 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#333",
+    color: colors.textPrimary,
     marginTop: 20,
     textAlign: "center",
   },
   emptySubtitle: {
     fontSize: 14,
-    color: "#666",
+    color: colors.textSecondary,
     marginTop: 8,
     textAlign: "center",
     lineHeight: 20,
@@ -837,9 +852,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: semanticColors.chipBorder,
     borderRadius: 12,
-    backgroundColor: "#fff",
+    backgroundColor: semanticColors.chipBackground,
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
@@ -847,23 +862,23 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   activeFilterChip: {
-    backgroundColor: "#e74c3c",
-    borderColor: "#e74c3c",
+    backgroundColor: semanticColors.chipActiveBackground,
+    borderColor: colors.primary,
   },
   filterChipText: {
     fontSize: 12,
-    color: "#666",
+    color: semanticColors.chipText,
     fontWeight: "500",
     lineHeight: 16,
   },
   activeFilterChipText: {
-    color: "#fff",
+    color: semanticColors.chipActiveText,
     fontWeight: "600",
   },
   filterSeparator: {
     width: 1,
     height: 16,
-    backgroundColor: "#ddd",
+    backgroundColor: colors.border,
     marginHorizontal: 6,
     alignSelf: "center",
   },
@@ -873,23 +888,23 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   clearFilterChip: {
-    borderColor: "#e74c3c",
-    backgroundColor: "#fff",
+    borderColor: colors.primary,
+    backgroundColor: colors.surface,
   },
   modalOverlay: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: semanticColors.modalOverlay,
     padding: 20,
   },
   modalContent: {
-    backgroundColor: "#fff",
+    backgroundColor: semanticColors.modalBackground,
     borderRadius: 15,
     width: "100%",
     maxWidth: 400,
     maxHeight: "80%",
-    shadowColor: "#000",
+    shadowColor: colors.shadow,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -904,12 +919,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: semanticColors.modalBorder,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#333",
+    color: colors.textPrimary,
   },
   modalBody: {
     padding: 20,
@@ -921,22 +936,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 15,
     borderWidth: 1,
-    borderColor: "#e0e0e0",
+    borderColor: colors.borderLight,
     borderRadius: 10,
     marginBottom: 8,
-    backgroundColor: "#fff",
+    backgroundColor: colors.surface,
   },
   selectedViolationOption: {
-    backgroundColor: "#e74c3c",
-    borderColor: "#e74c3c",
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   violationOptionText: {
     fontSize: 16,
-    color: "#333",
+    color: colors.textPrimary,
     flex: 1,
   },
   selectedViolationOptionText: {
-    color: "#fff",
+    color: colors.white,
     fontWeight: "600",
   },
   modalFooter: {
@@ -945,48 +960,48 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: "#f0f0f0",
+    borderTopColor: semanticColors.modalBorder,
     gap: 10,
   },
   clearViolationsButton: {
     flex: 1,
     padding: 12,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: colors.border,
     borderRadius: 8,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: colors.surfaceSecondary,
     alignItems: "center",
   },
   clearViolationsButtonText: {
     fontSize: 14,
-    color: "#666",
+    color: colors.textSecondary,
     fontWeight: "500",
   },
   applyButton: {
     flex: 1,
     padding: 12,
-    backgroundColor: "#e74c3c",
+    backgroundColor: colors.primary,
     borderRadius: 8,
     alignItems: "center",
   },
   applyButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#fff",
+    color: colors.white,
   },
   clearFiltersButton: {
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: "#e74c3c",
+    borderColor: colors.primary,
     borderRadius: 8,
-    backgroundColor: "#fff",
+    backgroundColor: colors.surface,
     marginTop: 15,
     alignItems: "center",
   },
   clearFiltersButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#e74c3c",
+    color: colors.primary,
   },
 });

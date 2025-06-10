@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LocationPicker from "../components/LocationPicker";
 import InAppNotification from "../components/InAppNotification";
+import colors, { semanticColors } from "../styles/colors";
 
 const VIOLATION_TYPES = [
   { id: "double_parking", label: "Double Parking", icon: "car-outline" },
@@ -219,7 +220,7 @@ export default function ReportScreen() {
               value={plateNumber}
               onChangeText={handlePlateChange}
               placeholder="Enter plate number (e.g., ABC1234)"
-              placeholderTextColor="#999"
+              placeholderTextColor={semanticColors.inputPlaceholder}
               autoCapitalize="characters"
               maxLength={10}
             />
@@ -260,8 +261,8 @@ export default function ReportScreen() {
                     size={24}
                     color={
                       selectedViolations.includes(violation.id)
-                        ? "#fff"
-                        : "#e74c3c"
+                        ? colors.white
+                        : colors.primary
                     }
                   />
                   <Text
@@ -301,7 +302,11 @@ export default function ReportScreen() {
               onPress={openLocationPicker}
             >
               <View style={styles.locationPickerContent}>
-                <Ionicons name="location-outline" size={20} color="#e74c3c" />
+                <Ionicons
+                  name="location-outline"
+                  size={20}
+                  color={colors.primary}
+                />
                 <View style={styles.locationTextContainer}>
                   {location ? (
                     <>
@@ -321,7 +326,11 @@ export default function ReportScreen() {
                     </Text>
                   )}
                 </View>
-                <Ionicons name="chevron-forward" size={20} color="#666" />
+                <Ionicons
+                  name="chevron-forward"
+                  size={20}
+                  color={colors.textSecondary}
+                />
               </View>
             </TouchableOpacity>
             {locationError && (
@@ -337,7 +346,7 @@ export default function ReportScreen() {
               value={notes}
               onChangeText={setNotes}
               placeholder="Add any additional details about the violation..."
-              placeholderTextColor="#999"
+              placeholderTextColor={semanticColors.inputPlaceholder}
               multiline
               numberOfLines={4}
               textAlignVertical="top"
@@ -358,7 +367,7 @@ export default function ReportScreen() {
                 isSubmitting ? "hourglass-outline" : "checkmark-circle-outline"
               }
               size={20}
-              color="#fff"
+              color={colors.white}
             />
             <Text style={styles.submitButtonText}>
               {isSubmitting ? "Submitting..." : "Submit Report"}
@@ -381,7 +390,7 @@ export default function ReportScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: colors.background,
   },
   scrollView: {
     flex: 1,
@@ -396,21 +405,21 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#333",
+    color: colors.textPrimary,
     marginBottom: 8,
   },
   sectionSubtitle: {
     fontSize: 14,
-    color: "#666",
+    color: colors.textSecondary,
     marginBottom: 12,
   },
   plateInput: {
-    backgroundColor: "#fff",
+    backgroundColor: semanticColors.inputBackground,
     borderRadius: 10,
     padding: 15,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: semanticColors.inputBorder,
     textAlign: "center",
     fontWeight: "bold",
     letterSpacing: 2,
@@ -421,33 +430,33 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   violationItem: {
-    backgroundColor: "#fff",
+    backgroundColor: semanticColors.inputBackground,
     borderRadius: 10,
     padding: 15,
     alignItems: "center",
     minWidth: "45%",
     borderWidth: 2,
-    borderColor: "#e74c3c",
+    borderColor: colors.primary,
   },
   violationItemSelected: {
-    backgroundColor: "#e74c3c",
-    borderColor: "#c0392b",
+    backgroundColor: colors.primary,
+    borderColor: colors.primaryDark,
   },
   violationText: {
     marginTop: 8,
     fontSize: 12,
-    color: "#333",
+    color: colors.textPrimary,
     textAlign: "center",
     fontWeight: "500",
   },
   violationTextSelected: {
-    color: "#fff",
+    color: colors.white,
   },
   locationPickerButton: {
-    backgroundColor: "#fff",
+    backgroundColor: semanticColors.inputBackground,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: semanticColors.inputBorder,
   },
   locationPickerContent: {
     flexDirection: "row",
@@ -461,28 +470,28 @@ const styles = StyleSheet.create({
   locationSelectedText: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#27ae60",
+    color: semanticColors.successText,
     marginBottom: 2,
   },
   locationAddressText: {
     fontSize: 12,
-    color: "#666",
+    color: colors.textSecondary,
   },
   locationPlaceholderText: {
     fontSize: 14,
-    color: "#999",
+    color: semanticColors.inputPlaceholder,
   },
   notesInput: {
-    backgroundColor: "#fff",
+    backgroundColor: semanticColors.inputBackground,
     borderRadius: 10,
     padding: 15,
     fontSize: 14,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: semanticColors.inputBorder,
     minHeight: 100,
   },
   submitButton: {
-    backgroundColor: "#27ae60",
+    backgroundColor: colors.success,
     borderRadius: 10,
     padding: 18,
     flexDirection: "row",
@@ -491,32 +500,32 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   submitButtonDisabled: {
-    backgroundColor: "#bdc3c7",
+    backgroundColor: semanticColors.buttonDisabled,
   },
   submitButtonText: {
-    color: "#fff",
+    color: semanticColors.buttonPrimaryText,
     fontSize: 16,
     fontWeight: "bold",
     marginLeft: 8,
   },
   sectionTitleError: {
-    color: "#e74c3c",
+    color: colors.error,
   },
   inputError: {
-    borderColor: "#e74c3c",
+    borderColor: semanticColors.inputBorderError,
     borderWidth: 2,
-  },
-  errorText: {
-    color: "#e74c3c",
-    fontSize: 12,
-    marginTop: 5,
-    fontWeight: "500",
   },
   violationsGridError: {
     borderWidth: 2,
-    borderColor: "#e74c3c",
+    borderColor: colors.error,
     borderRadius: 10,
     padding: 10,
-    backgroundColor: "#ffeaea",
+    backgroundColor: colors.errorLight,
+  },
+  errorText: {
+    color: colors.error,
+    fontSize: 12,
+    marginTop: 5,
+    fontWeight: "500",
   },
 });

@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import colors, { semanticColors, colorVariants } from "../styles/colors";
 
 const InAppNotification = ({ notification, animationValue }) => {
   if (!notification) return null;
@@ -32,7 +33,7 @@ const InAppNotification = ({ notification, animationValue }) => {
           notification.type === "success" ? "checkmark-circle" : "alert-circle"
         }
         size={20}
-        color="#fff"
+        color={semanticColors.notificationText}
       />
       <Text style={styles.notificationText}>{notification.message}</Text>
     </Animated.View>
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 10,
     borderRadius: 10,
-    shadowColor: "#000",
+    shadowColor: colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -64,13 +65,13 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   notificationSuccess: {
-    backgroundColor: "#27ae60",
+    backgroundColor: semanticColors.notificationSuccess,
   },
   notificationError: {
-    backgroundColor: "#e74c3c",
+    backgroundColor: semanticColors.notificationError,
   },
   notificationText: {
-    color: "#fff",
+    color: semanticColors.notificationText,
     fontSize: 14,
     fontWeight: "600",
     flex: 1,

@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import colors, { semanticColors } from "../styles/colors";
 
 const ConfirmDialog = ({
   visible,
@@ -30,13 +31,13 @@ const ConfirmDialog = ({
   const getIconColor = () => {
     switch (type) {
       case "danger":
-        return "#e74c3c";
+        return colors.primary;
       case "warning":
-        return "#f39c12";
+        return colors.warning;
       case "info":
-        return "#3498db";
+        return colors.info;
       default:
-        return "#666";
+        return colors.textSecondary;
     }
   };
 
@@ -86,17 +87,17 @@ const ConfirmDialog = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: semanticColors.modalOverlay,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
   dialog: {
-    backgroundColor: "#fff",
+    backgroundColor: semanticColors.modalBackground,
     borderRadius: 15,
     width: "100%",
     maxWidth: 400,
-    shadowColor: "#000",
+    shadowColor: colors.shadow,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -118,20 +119,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#333",
+    color: colors.textPrimary,
     textAlign: "center",
     marginBottom: 8,
   },
   message: {
     fontSize: 14,
-    color: "#666",
+    color: colors.textSecondary,
     textAlign: "center",
     lineHeight: 20,
   },
   footer: {
     flexDirection: "row",
     borderTopWidth: 1,
-    borderTopColor: "#f0f0f0",
+    borderTopColor: semanticColors.modalBorder,
   },
   button: {
     flex: 1,
@@ -142,28 +143,28 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     borderRightWidth: 1,
-    borderRightColor: "#f0f0f0",
+    borderRightColor: semanticColors.modalBorder,
   },
   confirmButton: {
     // Base confirm button styles
   },
   dangerButton: {
-    backgroundColor: "#e74c3c",
+    backgroundColor: colors.primary,
   },
   warningButton: {
-    backgroundColor: "#f39c12",
+    backgroundColor: colors.warning,
   },
   infoButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: colors.info,
   },
   cancelButtonText: {
     fontSize: 16,
-    color: "#666",
+    color: colors.textSecondary,
     fontWeight: "500",
   },
   confirmButtonText: {
     fontSize: 16,
-    color: "#fff",
+    color: colors.white,
     fontWeight: "600",
   },
 });
