@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import colors, { semanticColors } from "../styles/colors";
+import { PLATE_TYPES } from "../constants/plateTypes";
 
 const FILTER_TYPES = {
   ALL: "all",
@@ -47,12 +48,15 @@ const SearchFilters = ({
   onDateFilterChange,
   selectedViolations,
   onViolationToggle,
+  selectedPlateTypes,
+  onPlateTypeToggle,
   onClearAllFilters,
   hasActiveFilters,
   reportsCount,
   filteredCount,
 }) => {
   const [showFilterModal, setShowFilterModal] = React.useState(false);
+  const [showPlateTypeModal, setShowPlateTypeModal] = React.useState(false);
 
   const renderSearchBar = () => (
     <View style={styles.searchContainer}>
@@ -113,6 +117,33 @@ const SearchFilters = ({
           </Text>
         </TouchableOpacity>
       ))}
+
+      {/* Plate Type Filters */}
+      <TouchableOpacity
+        style={[
+          styles.filterChip,
+          styles.advancedFilterChip,
+          selectedPlateTypes.length > 0 && styles.activeFilterChip,
+        ]}
+        onPress={() => setShowPlateTypeModal(true)}
+      >
+        <Ionicons
+          name="shield-outline"
+          size={14}
+          color={
+            selectedPlateTypes.length > 0 ? colors.white : colors.textSecondary
+          }
+        />
+        <Text
+          style={[
+            styles.filterChipText,
+            selectedPlateTypes.length > 0 && styles.activeFilterChipText,
+          ]}
+        >
+          Plate Types{" "}
+          {selectedPlateTypes.length > 0 && `(${selectedPlateTypes.length})`}
+        </Text>
+      </TouchableOpacity>
 
       {/* Violation Type Filters */}
       <TouchableOpacity
@@ -191,6 +222,83 @@ const SearchFilters = ({
         </>
       )}
     </ScrollView>
+  );
+
+  const renderPlateTypeModal = () => (
+    <Modal
+      visible={showPlateTypeModal}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={() => setShowPlateTypeModal(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Filter by Plate Types</Text>
+            <TouchableOpacity onPress={() => setShowPlateTypeModal(false)}>
+              <Ionicons name="close" size={24} color={colors.textPrimary} />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView style={styles.modalBody}>
+            {PLATE_TYPES.map((type) => (
+              <TouchableOpacity
+                key={type.id}
+                style={[
+                  styles.plateTypeOption,
+                  selectedPlateTypes.includes(type.id) &&
+                    styles.selectedPlateTypeOption,
+                ]}
+                onPress={() => onPlateTypeToggle(type.id)}
+              >
+                <View style={styles.plateTypeOptionContent}>
+                  <Ionicons
+                    name={type.icon}
+                    size={20}
+                    color={
+                      selectedPlateTypes.includes(type.id)
+                        ? colors.white
+                        : type.color
+                    }
+                  />
+                  <Text
+                    style={[
+                      styles.plateTypeOptionText,
+                      selectedPlateTypes.includes(type.id) &&
+                        styles.selectedPlateTypeOptionText,
+                    ]}
+                  >
+                    {type.label}
+                  </Text>
+                </View>
+                {selectedPlateTypes.includes(type.id) && (
+                  <Ionicons name="checkmark" size={20} color={colors.white} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          <View style={styles.modalFooter}>
+            <TouchableOpacity
+              style={styles.clearViolationsButton}
+              onPress={() => {
+                selectedPlateTypes.forEach((id) => onPlateTypeToggle(id));
+              }}
+            >
+              <Text style={styles.clearViolationsButtonText}>
+                Clear Plate Types
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.applyButton}
+              onPress={() => setShowPlateTypeModal(false)}
+            >
+              <Text style={styles.applyButtonText}>Apply</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 
   const renderFilterModal = () => (
@@ -273,6 +381,7 @@ const SearchFilters = ({
       {renderSearchBar()}
       {renderFilterChips()}
       {renderStats()}
+      {renderPlateTypeModal()}
       {renderFilterModal()}
     </>
   );
@@ -462,6 +571,36 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: colors.white,
+  },
+  plateTypeOption: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 15,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+    borderRadius: 10,
+    marginBottom: 8,
+    backgroundColor: colors.surface,
+  },
+  selectedPlateTypeOption: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  plateTypeOptionContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  plateTypeOptionText: {
+    fontSize: 16,
+    color: colors.textPrimary,
+    marginLeft: 10,
+    flex: 1,
+  },
+  selectedPlateTypeOptionText: {
+    color: colors.white,
+    fontWeight: "600",
   },
 });
 

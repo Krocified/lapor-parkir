@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import colors, { semanticColors } from "../styles/colors";
+import { PLATE_TYPES, getPlateTypeInfo } from "../constants/plateTypes";
 
 const VIOLATION_LABELS = {
   double_parking: "Double Parking",
@@ -35,11 +36,28 @@ const SearchResults = ({
     return violations.map((id) => VIOLATION_LABELS[id]).join(", ");
   };
 
+  const renderPlateTypeBadge = (plateType) => {
+    if (!plateType || plateType === "regular") return null;
+
+    const typeInfo = getPlateTypeInfo(plateType);
+    return (
+      <View
+        style={[styles.plateTypeBadge, { backgroundColor: typeInfo.color }]}
+      >
+        <Ionicons name={typeInfo.icon} size={12} color={colors.white} />
+        <Text style={styles.plateTypeBadgeText}>{typeInfo.label}</Text>
+      </View>
+    );
+  };
+
   const renderReportCard = ({ item }) => (
     <View style={styles.reportCard}>
       <View style={styles.reportHeader}>
-        <View style={styles.plateContainer}>
-          <Text style={styles.plateNumber}>{item.plateNumber}</Text>
+        <View style={styles.plateSection}>
+          <View style={styles.plateContainer}>
+            <Text style={styles.plateNumber}>{item.plateNumber}</Text>
+          </View>
+          {renderPlateTypeBadge(item.plateType)}
         </View>
         <TouchableOpacity
           style={styles.deleteButton}
@@ -184,8 +202,12 @@ const styles = StyleSheet.create({
   reportHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
     marginBottom: 15,
+  },
+  plateSection: {
+    flexDirection: "column",
+    alignItems: "flex-start",
   },
   plateContainer: {
     backgroundColor: semanticColors.plateNumberBackground,
@@ -198,6 +220,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     letterSpacing: 1,
+  },
+  plateTypeBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    marginTop: 6,
+    gap: 4,
+  },
+  plateTypeBadgeText: {
+    color: colors.white,
+    fontSize: 10,
+    fontWeight: "600",
+    textTransform: "uppercase",
   },
   deleteButton: {
     padding: 8,

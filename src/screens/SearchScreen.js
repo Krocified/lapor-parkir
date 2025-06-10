@@ -9,6 +9,7 @@ import SearchFilters, {
   DATE_FILTERS,
 } from "../components/SearchFilters";
 import SearchResults from "../components/SearchResults";
+import { PLATE_TYPES } from "../constants/plateTypes";
 import colors from "../styles/colors";
 
 const VIOLATION_LABELS = {
@@ -34,6 +35,7 @@ export default function SearchScreen() {
   const [activeFilterType, setActiveFilterType] = useState(FILTER_TYPES.ALL);
   const [activeDateFilter, setActiveDateFilter] = useState(DATE_FILTERS.ALL);
   const [selectedViolations, setSelectedViolations] = useState([]);
+  const [selectedPlateTypes, setSelectedPlateTypes] = useState([]);
 
   // Notification and dialog states
   const [notification, setNotification] = useState(null);
@@ -79,7 +81,8 @@ export default function SearchScreen() {
         searchQuery,
         activeFilterType,
         activeDateFilter,
-        selectedViolations
+        selectedViolations,
+        selectedPlateTypes
       );
     } catch (error) {
       console.error("Error loading reports:", error);
@@ -130,7 +133,8 @@ export default function SearchScreen() {
     query,
     filterType,
     dateFilter,
-    violationFilters
+    violationFilters,
+    plateTypeFilters
   ) => {
     let filtered = [...reportsData];
 
@@ -147,6 +151,13 @@ export default function SearchScreen() {
         report.violations.some((violation) =>
           violationFilters.includes(violation)
         )
+      );
+    }
+
+    // Apply plate type filter
+    if (plateTypeFilters.length > 0) {
+      filtered = filtered.filter((report) =>
+        plateTypeFilters.includes(report.plateType || "regular")
       );
     }
 
@@ -191,7 +202,8 @@ export default function SearchScreen() {
       query,
       activeFilterType,
       activeDateFilter,
-      selectedViolations
+      selectedViolations,
+      selectedPlateTypes
     );
   };
 
@@ -202,7 +214,8 @@ export default function SearchScreen() {
       searchQuery,
       filterType,
       activeDateFilter,
-      selectedViolations
+      selectedViolations,
+      selectedPlateTypes
     );
   };
 
@@ -213,7 +226,8 @@ export default function SearchScreen() {
       searchQuery,
       activeFilterType,
       dateFilter,
-      selectedViolations
+      selectedViolations,
+      selectedPlateTypes
     );
   };
 
@@ -228,7 +242,24 @@ export default function SearchScreen() {
       searchQuery,
       activeFilterType,
       activeDateFilter,
-      newViolations
+      newViolations,
+      selectedPlateTypes
+    );
+  };
+
+  const togglePlateTypeFilter = (plateTypeId) => {
+    const newPlateTypes = selectedPlateTypes.includes(plateTypeId)
+      ? selectedPlateTypes.filter((id) => id !== plateTypeId)
+      : [...selectedPlateTypes, plateTypeId];
+
+    setSelectedPlateTypes(newPlateTypes);
+    applyAllFilters(
+      reports,
+      searchQuery,
+      activeFilterType,
+      activeDateFilter,
+      selectedViolations,
+      newPlateTypes
     );
   };
 
@@ -237,6 +268,7 @@ export default function SearchScreen() {
     setActiveFilterType(FILTER_TYPES.ALL);
     setActiveDateFilter(DATE_FILTERS.ALL);
     setSelectedViolations([]);
+    setSelectedPlateTypes([]);
     setFilteredReports(reports);
   };
 
@@ -245,7 +277,8 @@ export default function SearchScreen() {
       searchQuery ||
       activeFilterType !== FILTER_TYPES.ALL ||
       activeDateFilter !== DATE_FILTERS.ALL ||
-      selectedViolations.length > 0
+      selectedViolations.length > 0 ||
+      selectedPlateTypes.length > 0
     );
   };
 
@@ -278,7 +311,8 @@ export default function SearchScreen() {
         searchQuery,
         activeFilterType,
         activeDateFilter,
-        selectedViolations
+        selectedViolations,
+        selectedPlateTypes
       );
 
       // Force list re-render
@@ -314,6 +348,8 @@ export default function SearchScreen() {
         onDateFilterChange={setDateFilter}
         selectedViolations={selectedViolations}
         onViolationToggle={toggleViolationFilter}
+        selectedPlateTypes={selectedPlateTypes}
+        onPlateTypeToggle={togglePlateTypeFilter}
         onClearAllFilters={clearAllFilters}
         hasActiveFilters={hasActiveFilters()}
         reportsCount={reports.length}

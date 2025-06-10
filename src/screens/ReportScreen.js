@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LocationPicker from "../components/LocationPicker";
 import InAppNotification from "../components/InAppNotification";
 import colors, { semanticColors } from "../styles/colors";
+import { PLATE_TYPES } from "../constants/plateTypes";
 
 const VIOLATION_TYPES = [
   { id: "double_parking", label: "Double Parking", icon: "car-outline" },
@@ -33,6 +34,7 @@ const VIOLATION_TYPES = [
 
 export default function ReportScreen() {
   const [plateNumber, setPlateNumber] = useState("");
+  const [plateType, setPlateType] = useState("regular");
   const [selectedViolations, setSelectedViolations] = useState([]);
   const [location, setLocation] = useState(null);
   const [notes, setNotes] = useState("");
@@ -141,6 +143,7 @@ export default function ReportScreen() {
       const report = {
         id: Date.now().toString(),
         plateNumber: plateNumber.toUpperCase().trim(),
+        plateType: plateType,
         violations: selectedViolations,
         location: {
           latitude: location.latitude,
@@ -178,6 +181,7 @@ export default function ReportScreen() {
 
   const resetForm = () => {
     setPlateNumber("");
+    setPlateType("regular");
     setSelectedViolations([]);
     setNotes("");
     setLocation(null);
@@ -227,6 +231,44 @@ export default function ReportScreen() {
             {plateError && (
               <Text style={styles.errorText}>Plate number is required</Text>
             )}
+          </View>
+
+          {/* Plate Type Selection */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Plate Type</Text>
+            <Text style={styles.sectionSubtitle}>
+              Select the type of license plate
+            </Text>
+            <View style={styles.plateTypesGrid}>
+              {PLATE_TYPES.map((type) => (
+                <TouchableOpacity
+                  key={type.id}
+                  style={[
+                    styles.plateTypeItem,
+                    plateType === type.id && styles.plateTypeItemSelected,
+                  ]}
+                  onPress={() => setPlateType(type.id)}
+                >
+                  <Ionicons
+                    name={type.icon}
+                    size={20}
+                    color={plateType === type.id ? colors.white : type.color}
+                  />
+                  <Text
+                    style={[
+                      styles.plateTypeText,
+                      plateType === type.id && styles.plateTypeTextSelected,
+                      {
+                        color:
+                          plateType === type.id ? colors.white : type.color,
+                      },
+                    ]}
+                  >
+                    {type.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
 
           {/* Violation Types */}
@@ -423,6 +465,34 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     letterSpacing: 2,
+  },
+  plateTypesGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  plateTypeItem: {
+    backgroundColor: semanticColors.inputBackground,
+    borderRadius: 10,
+    padding: 15,
+    alignItems: "center",
+    minWidth: "45%",
+    borderWidth: 2,
+    borderColor: colors.primary,
+  },
+  plateTypeItemSelected: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primaryDark,
+  },
+  plateTypeText: {
+    marginTop: 8,
+    fontSize: 12,
+    color: colors.textPrimary,
+    textAlign: "center",
+    fontWeight: "500",
+  },
+  plateTypeTextSelected: {
+    color: colors.white,
   },
   violationsGrid: {
     flexDirection: "row",
