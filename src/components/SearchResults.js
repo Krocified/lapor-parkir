@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   RefreshControl,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../styles/colors";
-import { PLATE_TYPES, getPlateTypeInfo } from "../constants/plateTypes";
+import { getPlateTypeInfo } from "../constants/plateTypes";
 import { getViolationLabel, getPlateTypeLabel } from "../i18n/translations";
 
 const SearchResults = ({
@@ -87,7 +88,9 @@ const SearchResults = ({
         </View>
 
         <View style={styles.violationsContainer}>
-          <Text style={styles.violationsLabel}>Violations:</Text>
+          <Text style={styles.violationsLabel}>
+            {t("search.violationsLabel")}
+          </Text>
           <Text style={styles.violationsText}>
             {formatViolations(item.violations)}
           </Text>
@@ -129,7 +132,7 @@ const SearchResults = ({
 
   const renderLoadingState = () => (
     <View style={styles.loadingContainer}>
-      <Ionicons name="hourglass-outline" size={32} color={colors.primary} />
+      <ActivityIndicator size="large" color={colors.primary} />
       <Text style={styles.loadingText}>{t("search.loadingReports")}</Text>
     </View>
   );

@@ -25,7 +25,8 @@
         "submittingButton": "Submitting...",
         "submitSuccess": "Report submitted successfully!",
         "submitError": "Failed to save report. Please try again.",
-        "validationError": "Please fill in all required fields"
+        "validationError": "Please fill in all required fields",
+        "title": "Report New Violation"
     },
     "plateTypes": {
         "regular": "Regular",
@@ -80,10 +81,31 @@
         "deleteCancelButton": "Cancel",
         "deleteSuccess": "Report deleted successfully!",
         "deleteError": "Failed to delete report. Please try again.",
-        "loadError": "Failed to load reports"
+        "loadError": "Failed to load reports",
+        "reportStats_one": "{{count}} report",
+        "reportStats_other": "{{count}} reports",
+        "violationsLabel": "Violations:"
     },
     "dialogs": {
         "confirm": "Confirm",
         "cancel": "Cancel"
+    },
+    "locationPicker": {
+        "permissionDenied": "Permission Denied",
+        "permissionNeeded": "Location access is needed to get your current location.",
+        "errorTitle": "Error",
+        "getCurrentLocationError": "Could not get current location. Please enter the address manually.",
+        "currentLocation": "Current location",
+        "enterAddressError": "Please enter an address.",
+        "selectLocationTitle": "Select Location",
+        "useCurrentLocationTitle": "Use Current Location",
+        "gettingLocation": "Getting Location...",
+        "useCurrentLocationButton": "Use Current Location",
+        "gpsNote": "This will use your device's GPS to automatically detect your current location.",
+        "manualEntryTitle": "Or Enter Address Manually",
+        "addressPlaceholder": "Enter the address where the violation occurred...",
+        "useThisAddressButton": "Use This Address",
+        "webInfo": "On web, manual address entry is recommended for better accuracy.",
+        "genericInfo": "You can either use your current GPS location or manually enter the address where the parking violation occurred."
     }
 }

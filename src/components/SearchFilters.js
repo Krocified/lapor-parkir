@@ -249,10 +249,12 @@ const SearchFilters = ({
       </ScrollView>
 
       {/* Stats */}
-      <Text style={styles.statsText}>
-        {reportsCount} {reportsCount === 1 ? "report" : "reports"}
-        {hasActiveFilters && t("search.statsFiltered")}
-      </Text>
+      <View style={styles.statsContainer}>
+        <Text style={styles.statsText}>
+          {t("search.reportStats", { count: reportsCount })}
+          {hasActiveFilters && t("search.statsFiltered")}
+        </Text>
+      </View>
 
       {/* Plate Type Modal */}
       <Modal
@@ -466,12 +468,22 @@ const styles = StyleSheet.create({
   filterChipIcon: {
     marginRight: 10,
   },
+  statsContainer: {
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    flexShrink: 0,
+    height: 44,
+    flexGrow: 0,
+  },
   statsText: {
     fontSize: 14,
     color: colors.textSecondary,
     fontWeight: "500",
     paddingHorizontal: 15,
     marginBottom: 5,
+  },
+  filteredText: {
+    color: colors.primary,
   },
   modalOverlay: {
     flex: 1,

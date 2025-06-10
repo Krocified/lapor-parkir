@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import { useTranslation } from "react-i18next";
 
 export default function LocationPicker({
   visible,
@@ -18,6 +19,7 @@ export default function LocationPicker({
   onClose,
   initialLocation,
 }) {
+  const { t } = useTranslation();
   const [manualAddress, setManualAddress] = useState(
     initialLocation?.address || ""
   );
@@ -30,8 +32,8 @@ export default function LocationPicker({
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(
-          "Permission Denied",
-          "Location access is needed to get your current location"
+          t("locationPicker.permissionDenied"),
+          t("locationPicker.permissionNeeded")
         );
         setIsGettingCurrentLocation(false);
         return;
@@ -56,8 +58,8 @@ export default function LocationPicker({
     } catch (error) {
       console.error("Error getting current location:", error);
       Alert.alert(
-        "Error",
-        "Could not get current location. Please enter the address manually."
+        t("locationPicker.errorTitle"),
+        t("locationPicker.getCurrentLocationError")
       );
     } finally {
       setIsGettingCurrentLocation(false);
@@ -81,18 +83,21 @@ export default function LocationPicker({
         ]
           .filter(Boolean)
           .join(", ");
-        return formattedAddress || "Current location";
+        return formattedAddress || t("locationPicker.currentLocation");
       }
-      return "Current location";
+      return t("locationPicker.currentLocation");
     } catch (error) {
       console.error("Error getting address:", error);
-      return "Current location";
+      return t("locationPicker.currentLocation");
     }
   };
 
   const handleManualLocationSubmit = () => {
     if (!manualAddress.trim()) {
-      Alert.alert("Error", "Please enter an address");
+      Alert.alert(
+        t("locationPicker.errorTitle"),
+        t("locationPicker.enterAddressError")
+      );
       return;
     }
 
@@ -118,14 +123,18 @@ export default function LocationPicker({
           <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
             <Ionicons name="close" size={24} color="#333" />
           </TouchableOpacity>
-          <Text style={styles.title}>Select Location</Text>
+          <Text style={styles.title}>
+            {t("locationPicker.selectLocationTitle")}
+          </Text>
           <View style={styles.placeholder} />
         </View>
 
         <View style={styles.content}>
           {/* Current Location Option */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Use Current Location</Text>
+            <Text style={styles.sectionTitle}>
+              {t("locationPicker.useCurrentLocationTitle")}
+            </Text>
             <TouchableOpacity
               style={[
                 styles.currentLocationButton,
@@ -142,24 +151,25 @@ export default function LocationPicker({
               />
               <Text style={styles.currentLocationButtonText}>
                 {isGettingCurrentLocation
-                  ? "Getting Location..."
-                  : "Use Current Location"}
+                  ? t("locationPicker.gettingLocation")
+                  : t("locationPicker.useCurrentLocationButton")}
               </Text>
             </TouchableOpacity>
             <Text style={styles.sectionNote}>
-              This will use your device's GPS to automatically detect your
-              current location
+              {t("locationPicker.gpsNote")}
             </Text>
           </View>
 
           {/* Manual Address Entry */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Or Enter Address Manually</Text>
+            <Text style={styles.sectionTitle}>
+              {t("locationPicker.manualEntryTitle")}
+            </Text>
             <TextInput
               style={styles.addressInput}
               value={manualAddress}
               onChangeText={setManualAddress}
-              placeholder="Enter the address where the violation occurred..."
+              placeholder={t("locationPicker.addressPlaceholder")}
               placeholderTextColor="#999"
               multiline
               numberOfLines={3}
@@ -174,7 +184,9 @@ export default function LocationPicker({
               disabled={!manualAddress.trim()}
             >
               <Ionicons name="checkmark-circle" size={20} color="#fff" />
-              <Text style={styles.manualButtonText}>Use This Address</Text>
+              <Text style={styles.manualButtonText}>
+                {t("locationPicker.useThisAddressButton")}
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -187,8 +199,8 @@ export default function LocationPicker({
             />
             <Text style={styles.infoText}>
               {Platform.OS === "web"
-                ? "On web, manual address entry is recommended for better accuracy."
-                : "You can either use your current GPS location or manually enter the address where the parking violation occurred."}
+                ? t("locationPicker.webInfo")
+                : t("locationPicker.genericInfo")}
             </Text>
           </View>
         </View>

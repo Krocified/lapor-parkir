@@ -25,7 +25,8 @@
         "submittingButton": "Mengirim...",
         "submitSuccess": "Laporan berhasil dikirim!",
         "submitError": "Gagal menyimpan laporan. Silakan coba lagi.",
-        "validationError": "Harap isi semua kolom yang wajib"
+        "validationError": "Harap isi semua kolom yang wajib",
+        "title": "Laporkan Pelanggaran Baru"
     },
     "plateTypes": {
         "regular": "Reguler",
@@ -33,7 +34,13 @@
         "diplomatic": "Diplomatik",
         "government": "Pemerintah",
         "emergency": "Darurat",
-        "other": "Khusus Lainnya"
+        "other": "Khusus Lainnya",
+        "deleteCancelButton": "Batal",
+        "deleteSuccess": "Laporan berhasil dihapus!",
+        "deleteError": "Gagal menghapus laporan. Silakan coba lagi.",
+        "loadError": "Gagal memuat laporan",
+        "reportStats_one": "{{count}} laporan",
+        "reportStats_other": "{{count}} laporan"
     },
     "violations": {
         "doubleParking": "Parkir Ganda",
@@ -80,10 +87,31 @@
         "deleteCancelButton": "Batal",
         "deleteSuccess": "Laporan berhasil dihapus!",
         "deleteError": "Gagal menghapus laporan. Silakan coba lagi.",
-        "loadError": "Gagal memuat laporan"
+        "loadError": "Gagal memuat laporan",
+        "reportStats_one": "{{count}} laporan",
+        "reportStats_other": "{{count}} laporan",
+        "violationsLabel": "Pelanggaran:"
     },
     "dialogs": {
         "confirm": "Konfirmasi",
         "cancel": "Batal"
+    },
+    "locationPicker": {
+        "permissionDenied": "Izin Ditolak",
+        "permissionNeeded": "Akses lokasi diperlukan untuk mendapatkan lokasi Anda saat ini.",
+        "errorTitle": "Terjadi Kesalahan",
+        "getCurrentLocationError": "Tidak dapat mengambil lokasi saat ini. Silakan masukkan alamat secara manual.",
+        "currentLocation": "Lokasi saat ini",
+        "enterAddressError": "Silakan masukkan alamat.",
+        "selectLocationTitle": "Pilih Lokasi",
+        "useCurrentLocationTitle": "Gunakan Lokasi Saat Ini",
+        "gettingLocation": "Mendapatkan Lokasi...",
+        "useCurrentLocationButton": "Gunakan Lokasi Saat Ini",
+        "gpsNote": "Ini akan menggunakan GPS perangkat Anda untuk mendeteksi lokasi Anda saat ini secara otomatis.",
+        "manualEntryTitle": "Atau Masukkan Alamat Manual",
+        "addressPlaceholder": "Masukkan alamat tempat terjadinya pelanggaran...",
+        "useThisAddressButton": "Gunakan Alamat Ini",
+        "webInfo": "Di web, entri alamat manual direkomendasikan untuk akurasi yang lebih baik.",
+        "genericInfo": "Anda dapat menggunakan lokasi GPS Anda saat ini atau memasukkan alamat secara manual tempat pelanggaran parkir terjadi."
     }
 }
