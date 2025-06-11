@@ -1,5 +1,8 @@
+// Load environment variables from root directory
+require("dotenv").config({ path: "../.env" });
+
 const fastify = require("fastify")({
-  logger: true,
+  logger: false, // Disable logger for Vercel
 });
 
 // Register CORS
@@ -13,7 +16,11 @@ let nextId = 1;
 
 // Health check
 fastify.get("/", async (request, reply) => {
-  return { message: "Lapor Parkir API is running!" };
+  return {
+    message: "Lapor Parkir API is running!",
+    environment: process.env.NODE_ENV || "development",
+    port: process.env.PORT || 3000,
+  };
 });
 
 // Get all reports
@@ -33,9 +40,9 @@ fastify.post("/api/reports", async (request, reply) => {
   const now = new Date();
   const newReport = {
     id: nextId++,
-    plateNumber: licensePlate,
-    licensePlate,
-    plateType: "regular",
+    plateNumber: licensePlate, // Frontend expects plateNumber
+    licensePlate, // Keep for API consistency
+    plateType: "regular", // Default plate type
     violations,
     location: {
       address: location || "Unknown location",
@@ -46,7 +53,7 @@ fastify.post("/api/reports", async (request, reply) => {
     time: now.toLocaleTimeString(),
   };
 
-  reports.unshift(newReport);
+  reports.unshift(newReport); // Add to beginning like frontend AsyncStorage did
   reply.code(201);
   return newReport;
 });
@@ -79,16 +86,28 @@ fastify.delete("/api/reports/:id", async (request, reply) => {
   return;
 });
 
-// Start server
-const start = async () => {
-  try {
-    const port = process.env.PORT || 3000;
-    await fastify.listen({ port, host: "0.0.0.0" });
-    console.log(`🚀 Server running on port ${port}`);
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-};
+// For Vercel deployment
+if (process.env.NODE_ENV === "production") {
+  module.exports = async (req, res) => {
+    await fastify.ready();
+    fastify.server.emit("request", req, res);
+  };
+} else {
+  // For local development
+  const start = async () => {
+    try {
+      const port = process.env.PORT || 3000;
+      await fastify.listen({ port, host: "0.0.0.0" });
+      console.log(`🚀 Server running on port ${port}`);
+      console.log(
+        `📧 Support: ${process.env.SUPPORT_EMAIL || "Not configured"}`
+      );
+      console.log(`🔗 GitHub: ${process.env.GITHUB_URL || "Not configured"}`);
+    } catch (err) {
+      fastify.log.error(err);
+      process.exit(1);
+    }
+  };
 
-start();
+  start();
+}

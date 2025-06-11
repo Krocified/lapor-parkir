@@ -4,7 +4,7 @@ const config = {
     API_BASE_URL: "http://localhost:3000/api",
   },
   production: {
-    API_BASE_URL: "http://localhost:3000/api", // Update this when deploying
+    API_BASE_URL: "https://lapor-parkir.vercel.app/api", // Update this after Vercel deployment
   },
 };
 
