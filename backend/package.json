@@ -14,7 +14,8 @@
         "parking",
         "api",
         "vercel",
-        "serverless"
+        "serverless",
+        "mongodb"
     ],
     "author": "",
     "license": "MIT",
@@ -22,7 +23,8 @@
         "fastify": "^4.24.3",
         "@fastify/cors": "^8.4.0",
         "@fastify/env": "^4.2.0",
-        "dotenv": "^16.3.1"
+        "dotenv": "^16.3.1",
+        "mongodb": "^6.3.0"
     },
     "devDependencies": {
         "nodemon": "^3.0.2",

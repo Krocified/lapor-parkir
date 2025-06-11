@@ -68,8 +68,13 @@ lapor-parkir/
 - **Fastify**: Ultra-fast and lightweight Node.js framework
 - **@fastify/cors**: Cross-origin resource sharing
 - **@fastify/env**: Environment configuration
+- **MongoDB Atlas**: Cloud database for persistent storage
 
 ## Installation & Setup
+
+### Database Setup (Required)
+
+The backend requires a MongoDB Atlas database. Follow the [Database Setup Guide](./DATABASE_SETUP.md) to create your free MongoDB Atlas cluster (5 minutes).
 
 ### Frontend Setup
 
@@ -97,14 +102,22 @@ lapor-parkir/
 
 ### Backend Setup
 
-1. **Navigate to backend directory and install dependencies**
+1. **Set up environment variables**
+
+   ```bash
+   # From project root
+   cp .env.example .env
+   # Edit .env and add your MongoDB URI
+   ```
+
+2. **Navigate to backend directory and install dependencies**
 
    ```bash
    cd backend
    npm install
    ```
 
-2. **Start the backend server**
+3. **Start the backend server**
 
    ```bash
    npm run dev    # Development with auto-reload
@@ -113,10 +126,10 @@ lapor-parkir/
 
    The API will be available at `http://localhost:3000`
 
-3. **Test the API**
+4. **Test the API**
    ```bash
    curl http://localhost:3000/
-   # Should return: {"message":"Lapor Parkir API is running!"}
+   # Should return database connection status and report count
    ```
 
 ## Usage
