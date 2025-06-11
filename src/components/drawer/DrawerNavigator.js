@@ -3,6 +3,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useTranslation } from "react-i18next";
 import { Ionicons } from "@expo/vector-icons";
 import { semanticColors } from "../../styles/colors";
+import Typography from "../common/Typography";
 
 import CustomHeader from "./CustomHeader";
 import MainTabNavigator from "../navigation/MainTabNavigator";
@@ -13,61 +14,44 @@ const Drawer = createDrawerNavigator();
 function DrawerNavigator() {
   const { t } = useTranslation();
 
-  return (
-    <Drawer.Navigator
-      screenOptions={({ navigation, route }) => ({
-        headerStyle: {
-          backgroundColor: semanticColors.headerBackground,
-          height: 56,
-        },
-        headerTintColor: semanticColors.headerText,
-        headerTitleStyle: {
-          fontWeight: "bold",
-        },
-        headerTitle: "",
-        header: () => {
-          let title = t("navigation.laporParkir", "Lapor Parkir");
-          if (route.name === "Main") {
-            title = t("navigation.laporParkir", "Lapor Parkir");
-          } else if (route.name === "About") {
-            title = t("navigation.about", "About");
-          }
+  const screenOptions = {
+    header: ({ navigation, route }) => (
+      <CustomHeader
+        navigation={navigation}
+        title={
+          route.params?.title || t(`navigation.${route.name.toLowerCase()}`)
+        }
+      />
+    ),
+    drawerStyle: {
+      backgroundColor: semanticColors.drawerBackground,
+      width: 280,
+    },
+    drawerItemStyle: {
+      borderRadius: 8,
+      marginVertical: 2,
+    },
+    drawerLabelStyle: {
+      fontSize: 16,
+      marginLeft: -20,
+    },
+    drawerActiveBackgroundColor: semanticColors.drawerActiveBackground,
+    drawerActiveTintColor: semanticColors.tabBarActive,
+    drawerInactiveTintColor: semanticColors.drawerTextInactive,
+  };
 
-          return <CustomHeader navigation={navigation} title={title} />;
-        },
-        drawerStyle: {
-          backgroundColor: semanticColors.drawerBackground,
-          width: 280,
-        },
-        drawerItemStyle: {
-          borderRadius: 8,
-          marginHorizontal: 8,
-          paddingLeft: 0,
-        },
-        drawerLabelStyle: {
-          color: semanticColors.drawerText,
-          fontSize: 16,
-          marginLeft: 0,
-        },
-        drawerActiveTintColor: semanticColors.tabBarActive,
-        drawerActiveBackgroundColor: semanticColors.drawerActiveBackground,
-        drawerInactiveTintColor: semanticColors.drawerTextInactive,
-        drawerContentStyle: {
-          paddingVertical: 8,
-          paddingLeft: 8,
-        },
-        drawerItemPressedStyle: {
-          backgroundColor: semanticColors.drawerItemHover,
-        },
-        drawerItemPressOpacity: 1,
-      })}
-    >
+  return (
+    <Drawer.Navigator initialRouteName="Main" screenOptions={screenOptions}>
       <Drawer.Screen
         name="Main"
         component={MainTabNavigator}
         options={{
-          title: t("navigation.home", "Home"),
-          drawerIcon: ({ color, size }) => (
+          drawerLabel: ({ focused, color }) => (
+            <Typography style={{ color, fontSize: 16, marginLeft: -20 }}>
+              {t("navigation.home")}
+            </Typography>
+          ),
+          drawerIcon: ({ focused, size, color }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
         }}
@@ -76,8 +60,12 @@ function DrawerNavigator() {
         name="About"
         component={AboutScreen}
         options={{
-          title: t("navigation.about", "About"),
-          drawerIcon: ({ color, size }) => (
+          drawerLabel: ({ focused, color }) => (
+            <Typography style={{ color, fontSize: 16, marginLeft: -20 }}>
+              {t("navigation.about")}
+            </Typography>
+          ),
+          drawerIcon: ({ focused, size, color }) => (
             <Ionicons
               name="information-circle-outline"
               size={size}

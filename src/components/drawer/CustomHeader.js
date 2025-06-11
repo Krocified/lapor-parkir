@@ -1,8 +1,9 @@
 import React from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { semanticColors } from "../../styles/colors";
 import LanguageSwitcher from "./LanguageSwitcher";
+import Typography from "../common/Typography";
 
 function CustomHeader({ navigation, title }) {
   return (
@@ -13,7 +14,9 @@ function CustomHeader({ navigation, title }) {
       >
         <Ionicons name="menu" size={24} color={semanticColors.headerText} />
       </TouchableOpacity>
-      <Text style={styles.headerTitle}>{title}</Text>
+      <Typography variant="h4" style={styles.headerTitle}>
+        {title}
+      </Typography>
       <LanguageSwitcher />
     </View>
   );

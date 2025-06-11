@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../styles/colors";
 import { getViolationLabel } from "../../i18n/translations";
+import Typography from "../common/Typography";
 
 const VIOLATION_TYPES = [
   { id: "double_parking", icon: "car-outline" },
@@ -25,17 +26,18 @@ const ViolationTypeSelector = ({
 
   return (
     <View style={styles.section}>
-      <Text
+      <Typography
+        variant="h4"
         style={[
           styles.sectionTitle,
           violationsError && styles.sectionTitleError,
         ]}
       >
         {t("report.violationType")} {t("report.violationTypeRequired")}
-      </Text>
-      <Text style={styles.sectionSubtitle}>
+      </Typography>
+      <Typography variant="body2" style={styles.sectionSubtitle}>
         {t("report.violationTypeSubtitle")}
-      </Text>
+      </Typography>
       <View
         style={[
           styles.violationsGrid,
@@ -61,7 +63,8 @@ const ViolationTypeSelector = ({
                   : colors.primary
               }
             />
-            <Text
+            <Typography
+              variant="caption"
               style={[
                 styles.violationText,
                 selectedViolations.includes(violation.id) &&
@@ -69,12 +72,14 @@ const ViolationTypeSelector = ({
               ]}
             >
               {getViolationLabel(violation.id, t)}
-            </Text>
+            </Typography>
           </TouchableOpacity>
         ))}
       </View>
       {violationsError && (
-        <Text style={styles.errorText}>{t("report.violationTypeError")}</Text>
+        <Typography variant="caption" style={styles.errorText}>
+          {t("report.violationTypeError")}
+        </Typography>
       )}
     </View>
   );
@@ -86,7 +91,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: 8,
   },
@@ -122,7 +126,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.textPrimary,
     textAlign: "center",
-    fontWeight: "500",
   },
   violationTextSelected: {
     color: colors.white,
@@ -138,7 +141,6 @@ const styles = StyleSheet.create({
     color: colors.error,
     fontSize: 12,
     marginTop: 5,
-    fontWeight: "500",
   },
 });
 

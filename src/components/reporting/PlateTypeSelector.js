@@ -1,10 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../styles/colors";
 import { PLATE_TYPES } from "../../constants/plateTypes";
 import { getPlateTypeLabel } from "../../i18n/translations";
+import Typography from "../common/Typography";
 
 const PlateTypeSelector = ({
   plateType,
@@ -26,9 +27,12 @@ const PlateTypeSelector = ({
         activeOpacity={0.7}
       >
         <View style={styles.plateTypeHeaderContent}>
-          <Text style={[styles.sectionTitle, styles.plateTypeSectionTitle]}>
+          <Typography
+            variant="h4"
+            style={[styles.sectionTitle, styles.plateTypeSectionTitle]}
+          >
             {t("report.plateType")}
-          </Text>
+          </Typography>
           <View style={styles.plateTypeHeaderRight}>
             <View style={styles.currentPlateTypeIndicator}>
               <Ionicons
@@ -36,7 +40,8 @@ const PlateTypeSelector = ({
                 size={16}
                 color={getCurrentPlateType().color}
               />
-              <Text
+              <Typography
+                variant="caption"
                 style={[
                   styles.currentPlateTypeText,
                   {
@@ -45,7 +50,7 @@ const PlateTypeSelector = ({
                 ]}
               >
                 {getPlateTypeLabel(getCurrentPlateType().id, t)}
-              </Text>
+              </Typography>
             </View>
             <Ionicons
               name={plateTypeExpanded ? "chevron-up" : "chevron-down"}
@@ -58,9 +63,9 @@ const PlateTypeSelector = ({
 
       {plateTypeExpanded && (
         <>
-          <Text style={styles.sectionSubtitle}>
+          <Typography variant="body2" style={styles.sectionSubtitle}>
             {t("report.plateTypeSubtitle")}
-          </Text>
+          </Typography>
           <View style={styles.plateTypesGrid}>
             {PLATE_TYPES.map((type) => (
               <TouchableOpacity
@@ -76,7 +81,8 @@ const PlateTypeSelector = ({
                   size={16}
                   color={plateType === type.id ? colors.white : type.color}
                 />
-                <Text
+                <Typography
+                  variant="overline"
                   style={[
                     styles.plateTypeText,
                     plateType === type.id && styles.plateTypeTextSelected,
@@ -86,7 +92,7 @@ const PlateTypeSelector = ({
                   ]}
                 >
                   {getPlateTypeLabel(type.id, t)}
-                </Text>
+                </Typography>
               </TouchableOpacity>
             ))}
           </View>
@@ -102,7 +108,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: 8,
   },
@@ -140,7 +145,6 @@ const styles = StyleSheet.create({
   },
   currentPlateTypeText: {
     fontSize: 12,
-    fontWeight: "600",
   },
   plateTypeSectionTitle: {
     marginBottom: 0,
@@ -169,7 +173,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 10,
     textAlign: "center",
-    fontWeight: "500",
   },
   plateTypeTextSelected: {
     color: colors.white,

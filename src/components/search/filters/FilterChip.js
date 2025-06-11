@@ -1,7 +1,8 @@
 import React from "react";
-import { Text, TouchableOpacity, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import colors, { semanticColors } from "../../../styles/colors";
+import Typography from "../../common/Typography";
 
 const FilterChip = ({
   label,
@@ -41,7 +42,9 @@ const FilterChip = ({
           style={styles.filterChipIcon}
         />
       )}
-      <Text style={getTextStyle()}>{displayLabel}</Text>
+      <Typography variant="caption" style={getTextStyle()}>
+        {displayLabel}
+      </Typography>
     </TouchableOpacity>
   );
 };
@@ -71,12 +74,10 @@ const styles = StyleSheet.create({
   filterChipText: {
     fontSize: 12,
     color: semanticColors.chipText,
-    fontWeight: "500",
     lineHeight: 16,
   },
   filterChipTextActive: {
     color: semanticColors.chipActiveText,
-    fontWeight: "600",
   },
   specialChipText: {
     color: colors.primary,

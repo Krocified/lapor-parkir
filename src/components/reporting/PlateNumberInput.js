@@ -1,18 +1,20 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, TextInput, StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../styles/colors";
+import Typography from "../common/Typography";
 
 const PlateNumberInput = ({ plateNumber, onPlateNumberChange, plateError }) => {
   const { t } = useTranslation();
 
   return (
     <View style={styles.section}>
-      <Text
+      <Typography
+        variant="h4"
         style={[styles.sectionTitle, plateError && styles.sectionTitleError]}
       >
         {t("report.plateNumber")} {t("report.plateNumberRequired")}
-      </Text>
+      </Typography>
       <TextInput
         style={[styles.plateInput, plateError && styles.inputError]}
         value={plateNumber}
@@ -23,7 +25,9 @@ const PlateNumberInput = ({ plateNumber, onPlateNumberChange, plateError }) => {
         maxLength={25}
       />
       {plateError && (
-        <Text style={styles.errorText}>{t("report.plateNumberError")}</Text>
+        <Typography variant="caption" style={styles.errorText}>
+          {t("report.plateNumberError")}
+        </Typography>
       )}
     </View>
   );
@@ -35,7 +39,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: 8,
   },
@@ -50,7 +53,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: semanticColors.inputBorder,
     textAlign: "center",
-    fontWeight: "bold",
+    fontFamily: "Inter-Bold",
     letterSpacing: 2,
   },
   inputError: {
@@ -61,7 +64,6 @@ const styles = StyleSheet.create({
     color: colors.error,
     fontSize: 12,
     marginTop: 5,
-    fontWeight: "500",
   },
 });
 

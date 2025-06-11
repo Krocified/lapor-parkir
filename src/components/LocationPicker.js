@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   Alert,
@@ -12,6 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { useTranslation } from "react-i18next";
+import Typography from "./common/Typography";
 
 export default function LocationPicker({
   visible,
@@ -123,18 +123,18 @@ export default function LocationPicker({
           <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
             <Ionicons name="close" size={24} color="#333" />
           </TouchableOpacity>
-          <Text style={styles.title}>
+          <Typography variant="h4" style={styles.title}>
             {t("locationPicker.selectLocationTitle")}
-          </Text>
+          </Typography>
           <View style={styles.placeholder} />
         </View>
 
         <View style={styles.content}>
           {/* Current Location Option */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>
+            <Typography variant="subtitle1" style={styles.sectionTitle}>
               {t("locationPicker.useCurrentLocationTitle")}
-            </Text>
+            </Typography>
             <TouchableOpacity
               style={[
                 styles.currentLocationButton,
@@ -149,22 +149,25 @@ export default function LocationPicker({
                 size={20}
                 color="#fff"
               />
-              <Text style={styles.currentLocationButtonText}>
+              <Typography
+                variant="button"
+                style={styles.currentLocationButtonText}
+              >
                 {isGettingCurrentLocation
                   ? t("locationPicker.gettingLocation")
                   : t("locationPicker.useCurrentLocationButton")}
-              </Text>
+              </Typography>
             </TouchableOpacity>
-            <Text style={styles.sectionNote}>
+            <Typography variant="caption" style={styles.sectionNote}>
               {t("locationPicker.gpsNote")}
-            </Text>
+            </Typography>
           </View>
 
           {/* Manual Address Entry */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>
+            <Typography variant="subtitle1" style={styles.sectionTitle}>
               {t("locationPicker.manualEntryTitle")}
-            </Text>
+            </Typography>
             <TextInput
               style={styles.addressInput}
               value={manualAddress}
@@ -184,9 +187,9 @@ export default function LocationPicker({
               disabled={!manualAddress.trim()}
             >
               <Ionicons name="checkmark-circle" size={20} color="#fff" />
-              <Text style={styles.manualButtonText}>
+              <Typography variant="button" style={styles.manualButtonText}>
                 {t("locationPicker.useThisAddressButton")}
-              </Text>
+              </Typography>
             </TouchableOpacity>
           </View>
 
@@ -197,11 +200,11 @@ export default function LocationPicker({
               size={20}
               color="#666"
             />
-            <Text style={styles.infoText}>
+            <Typography variant="body2" style={styles.infoText}>
               {Platform.OS === "web"
                 ? t("locationPicker.webInfo")
                 : t("locationPicker.genericInfo")}
-            </Text>
+            </Typography>
           </View>
         </View>
       </View>
@@ -226,7 +229,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: "bold",
     color: "#333",
   },
   closeButton: {
@@ -244,7 +246,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: "bold",
     color: "#333",
     marginBottom: 12,
   },
@@ -268,7 +269,6 @@ const styles = StyleSheet.create({
   currentLocationButtonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "bold",
     marginLeft: 8,
   },
   addressInput: {
@@ -280,6 +280,7 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     minHeight: 80,
     marginBottom: 15,
+    fontFamily: "Inter-Regular",
   },
   manualButton: {
     backgroundColor: "#27ae60",
@@ -295,7 +296,6 @@ const styles = StyleSheet.create({
   manualButtonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "bold",
     marginLeft: 8,
   },
   infoSection: {

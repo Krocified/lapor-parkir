@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
 import colors from "../../../styles/colors";
+import Typography from "../../common/Typography";
 
 const LoadingState = ({ message, size = "large", color = colors.primary }) => {
   const { t } = useTranslation();
@@ -9,9 +10,9 @@ const LoadingState = ({ message, size = "large", color = colors.primary }) => {
   return (
     <View style={styles.loadingContainer}>
       <ActivityIndicator size={size} color={color} />
-      <Text style={styles.loadingText}>
+      <Typography variant="body1" style={styles.loadingText}>
         {message || t("search.loadingReports")}
-      </Text>
+      </Typography>
     </View>
   );
 };
@@ -21,12 +22,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: colors.background,
+    padding: 20,
   },
   loadingText: {
-    marginTop: 10,
-    fontSize: 16,
+    marginTop: 15,
     color: colors.textSecondary,
+    textAlign: "center",
   },
 });
 

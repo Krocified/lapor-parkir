@@ -1,7 +1,6 @@
 import React from "react";
 import {
   View,
-  Text,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -11,6 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../styles/colors";
 import { config } from "../config/env";
+import Typography from "../components/common/Typography";
 
 export default function AboutScreen() {
   const { t } = useTranslation();
@@ -28,95 +28,101 @@ export default function AboutScreen() {
             <View style={styles.iconContainer}>
               <Ionicons name="car-outline" size={48} color={colors.primary} />
             </View>
-            <Text style={styles.appName}>Lapor Parkir</Text>
-            <Text style={styles.version}>Version 1.0.0</Text>
+            <Typography variant="h1" style={styles.appName}>
+              Lapor Parkir
+            </Typography>
+            <Typography variant="subtitle1" style={styles.version}>
+              Version 1.0.0
+            </Typography>
           </View>
 
-          <Text style={styles.description}>
+          <Typography variant="body1" style={styles.description}>
             {t(
               "about.description",
               "Lapor Parkir is a community-driven app that helps citizens report parking violations and contribute to better urban mobility. Together, we can create more organized and accessible public spaces."
             )}
-          </Text>
+          </Typography>
         </View>
 
         {/* Features Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
+          <Typography variant="h2" style={styles.sectionTitle}>
             {t("about.features", "Features")}
-          </Text>
+          </Typography>
 
           <View style={styles.featureItem}>
             <Ionicons name="camera-outline" size={24} color={colors.primary} />
             <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>
+              <Typography variant="subtitle1" style={styles.featureTitle}>
                 {t("about.reportViolations", "Report Violations")}
-              </Text>
-              <Text style={styles.featureDescription}>
+              </Typography>
+              <Typography variant="body2" style={styles.featureDescription}>
                 {t(
                   "about.reportViolationsDesc",
                   "Easily report parking violations with location and violation type details."
                 )}
-              </Text>
+              </Typography>
             </View>
           </View>
 
           <View style={styles.featureItem}>
             <Ionicons name="search-outline" size={24} color={colors.primary} />
             <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>
+              <Typography variant="subtitle1" style={styles.featureTitle}>
                 {t("about.searchReports", "Search Reports")}
-              </Text>
-              <Text style={styles.featureDescription}>
+              </Typography>
+              <Typography variant="body2" style={styles.featureDescription}>
                 {t(
                   "about.searchReportsDesc",
                   "Find and filter violation reports by location, date, and violation type."
                 )}
-              </Text>
+              </Typography>
             </View>
           </View>
 
           <View style={styles.featureItem}>
             <Ionicons name="shield-outline" size={24} color={colors.primary} />
             <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>
+              <Typography variant="subtitle1" style={styles.featureTitle}>
                 {t("about.plateTypes", "Special Plate Recognition")}
-              </Text>
-              <Text style={styles.featureDescription}>
+              </Typography>
+              <Typography variant="body2" style={styles.featureDescription}>
                 {t(
                   "about.plateTypesDesc",
                   "Identify and categorize different vehicle plate types including police, diplomatic, and more."
                 )}
-              </Text>
+              </Typography>
             </View>
           </View>
         </View>
 
         {/* Developer Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
+          <Typography variant="h2" style={styles.sectionTitle}>
             {t("about.developer", "Developer")}
-          </Text>
-          <Text style={styles.text}>
+          </Typography>
+          <Typography variant="body1" style={styles.text}>
             {t(
               "about.developerInfo",
               "This app was developed as part of a community initiative to improve urban mobility and parking compliance."
             )}
-          </Text>
+          </Typography>
         </View>
 
         {/* Contact Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
+          <Typography variant="h2" style={styles.sectionTitle}>
             {t("about.contact", "Contact & Support")}
-          </Text>
+          </Typography>
 
           <TouchableOpacity
             style={styles.contactItem}
             onPress={() => openLink(`mailto:${config.supportEmail}`)}
           >
             <Ionicons name="mail-outline" size={20} color={colors.primary} />
-            <Text style={styles.contactText}>{config.supportEmail}</Text>
+            <Typography variant="body1" style={styles.contactText}>
+              {config.supportEmail}
+            </Typography>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -124,30 +130,34 @@ export default function AboutScreen() {
             onPress={() => openLink(config.githubUrl)}
           >
             <Ionicons name="logo-github" size={20} color={colors.primary} />
-            <Text style={styles.contactText}>GitHub Repository</Text>
+            <Typography variant="body1" style={styles.contactText}>
+              GitHub Repository
+            </Typography>
           </TouchableOpacity>
         </View>
 
         {/* Legal Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t("about.legal", "Legal")}</Text>
-          <Text style={styles.text}>
+          <Typography variant="h2" style={styles.sectionTitle}>
+            {t("about.legal", "Legal")}
+          </Typography>
+          <Typography variant="body1" style={styles.text}>
             {t(
               "about.disclaimer",
               "This app is for community use only. Please verify all reports with local authorities before taking any action."
             )}
-          </Text>
+          </Typography>
         </View>
 
         {/* Attribution */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>
+          <Typography variant="subtitle1" style={styles.footerText}>
             {t("about.madeWith", "Made with ❤️ for better cities")}
-          </Text>
-          <Text style={styles.copyright}>
+          </Typography>
+          <Typography variant="caption" style={styles.copyright}>
             © 2025 Lapor Parkir.{" "}
             {t("about.allRightsReserved", "All rights reserved.")}
-          </Text>
+          </Typography>
         </View>
       </View>
     </ScrollView>
@@ -180,7 +190,6 @@ const styles = StyleSheet.create({
   },
   appName: {
     fontSize: 28,
-    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: 5,
   },
@@ -196,19 +205,19 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: 15,
+  },
+  text: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: colors.textPrimary,
   },
   featureItem: {
     flexDirection: "row",
     alignItems: "flex-start",
     marginBottom: 20,
-    padding: 15,
-    backgroundColor: semanticColors.cardBackground,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: semanticColors.cardBorder,
+    paddingHorizontal: 10,
   },
   featureText: {
     flex: 1,
@@ -216,44 +225,27 @@ const styles = StyleSheet.create({
   },
   featureTitle: {
     fontSize: 16,
-    fontWeight: "600",
     color: colors.textPrimary,
     marginBottom: 5,
   },
   featureDescription: {
     fontSize: 14,
-    color: colors.textSecondary,
     lineHeight: 20,
-  },
-  text: {
-    fontSize: 15,
-    lineHeight: 22,
-    color: colors.textPrimary,
+    color: colors.textSecondary,
   },
   contactItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    backgroundColor: semanticColors.cardBackground,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    marginBottom: 8,
     borderRadius: 8,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: semanticColors.cardBorder,
+    backgroundColor: semanticColors.cardBackground,
   },
   contactText: {
     fontSize: 15,
     color: colors.primary,
-    marginLeft: 10,
-    fontWeight: "500",
-  },
-  linkItem: {
-    paddingVertical: 10,
-  },
-  linkText: {
-    fontSize: 15,
-    color: colors.primary,
-    fontWeight: "500",
+    marginLeft: 12,
   },
   footer: {
     alignItems: "center",

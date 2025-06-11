@@ -1,7 +1,6 @@
 import React from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   ScrollView,
   Modal,
@@ -9,6 +8,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import colors, { semanticColors } from "../../../styles/colors";
+import Typography from "../../common/Typography";
 
 const FilterModal = ({
   visible,
@@ -36,14 +36,15 @@ const FilterModal = ({
             style={styles.modalItemIcon}
           />
         )}
-        <Text
+        <Typography
+          variant="body1"
           style={[
             styles.modalItemText,
             isSelected && styles.modalItemTextSelected,
           ]}
         >
           {item.label}
-        </Text>
+        </Typography>
       </View>
       {isSelected && (
         <Ionicons name="checkmark" size={20} color={colors.white} />
@@ -54,36 +55,33 @@ const FilterModal = ({
   return (
     <Modal
       visible={visible}
-      transparent={true}
       animationType="slide"
-      onRequestClose={onClose}
+      presentationStyle="pageSheet"
     >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{title}</Text>
-            <TouchableOpacity onPress={onClose}>
-              <Ionicons name="close" size={24} color={colors.textPrimary} />
-            </TouchableOpacity>
-          </View>
+      <View style={styles.modalContainer}>
+        <View style={styles.modalHeader}>
+          <Typography variant="h3" style={styles.modalTitle}>
+            {title}
+          </Typography>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Ionicons name="close" size={24} color={colors.textPrimary} />
+          </TouchableOpacity>
+        </View>
 
-          <ScrollView style={styles.modalBody}>
-            {items.map((item) => {
-              const isSelected = selectedItems.includes(item.id);
-              return renderItem
-                ? renderItem(item, isSelected, onToggleItem)
-                : defaultRenderItem(item, isSelected);
-            })}
-          </ScrollView>
+        <ScrollView style={styles.modalContent}>
+          {items.map((item) => {
+            const isSelected = selectedItems.includes(item.id);
+            return renderItem
+              ? renderItem(item, isSelected)
+              : defaultRenderItem(item, isSelected);
+          })}
+        </ScrollView>
 
-          <TouchableOpacity
-            style={styles.modalClearButton}
-            onPress={() => {
-              onClearAll();
-              onClose();
-            }}
-          >
-            <Text style={styles.modalClearButtonText}>{clearButtonText}</Text>
+        <View style={styles.modalFooter}>
+          <TouchableOpacity style={styles.clearAllButton} onPress={onClearAll}>
+            <Typography variant="button" style={styles.clearAllButtonText}>
+              {clearButtonText}
+            </Typography>
           </TouchableOpacity>
         </View>
       </View>
@@ -92,27 +90,9 @@ const FilterModal = ({
 };
 
 const styles = StyleSheet.create({
-  modalOverlay: {
+  modalContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: semanticColors.modalOverlay,
-    padding: 20,
-  },
-  modalContent: {
-    backgroundColor: semanticColors.modalBackground,
-    borderRadius: 15,
-    width: "100%",
-    maxWidth: 400,
-    maxHeight: "80%",
-    shadowColor: colors.shadow,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 10,
+    backgroundColor: colors.background,
   },
   modalHeader: {
     flexDirection: "row",
@@ -120,31 +100,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: semanticColors.modalBorder,
+    borderBottomColor: semanticColors.cardBorder,
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 20,
     color: colors.textPrimary,
   },
-  modalBody: {
+  closeButton: {
+    padding: 5,
+  },
+  modalContent: {
+    flex: 1,
     padding: 20,
-    maxHeight: 300,
   },
   modalItem: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    padding: 15,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    borderRadius: 10,
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderRadius: 8,
     marginBottom: 8,
-    backgroundColor: colors.surface,
+    backgroundColor: semanticColors.cardBackground,
+    borderWidth: 1,
+    borderColor: semanticColors.cardBorder,
   },
   modalItemSelected: {
-    backgroundColor: semanticColors.chipActiveBackground,
-    borderColor: colors.primary,
+    backgroundColor: colors.primary,
+    borderColor: colors.primaryDark,
   },
   modalItemContent: {
     flexDirection: "row",
@@ -152,30 +135,30 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   modalItemIcon: {
-    marginRight: 10,
+    marginRight: 12,
   },
   modalItemText: {
     fontSize: 16,
     color: colors.textPrimary,
-    flex: 1,
   },
   modalItemTextSelected: {
     color: colors.white,
-    fontWeight: "600",
   },
-  modalClearButton: {
-    flex: 1,
-    padding: 12,
-    backgroundColor: colors.primary,
+  modalFooter: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: semanticColors.cardBorder,
+  },
+  clearAllButton: {
+    backgroundColor: colors.textSecondary,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: "center",
-    margin: 20,
-    marginTop: 0,
   },
-  modalClearButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
+  clearAllButtonText: {
     color: colors.white,
+    fontSize: 14,
   },
 });
 

@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import { View, StyleSheet, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import colors, { semanticColors, colorVariants } from "../styles/colors";
+import Typography from "./common/Typography";
 
 const InAppNotification = ({ notification, animationValue }) => {
   if (!notification) return null;
@@ -35,7 +36,9 @@ const InAppNotification = ({ notification, animationValue }) => {
         size={20}
         color={semanticColors.notificationText}
       />
-      <Text style={styles.notificationText}>{notification.message}</Text>
+      <Typography variant="subtitle2" style={styles.notificationText}>
+        {notification.message}
+      </Typography>
     </Animated.View>
   );
 };
@@ -73,7 +76,6 @@ const styles = StyleSheet.create({
   notificationText: {
     color: semanticColors.notificationText,
     fontSize: 14,
-    fontWeight: "600",
     flex: 1,
     textAlign: "center",
   },

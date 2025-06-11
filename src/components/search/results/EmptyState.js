@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors from "../../../styles/colors";
+import Typography from "../../common/Typography";
 
 const EmptyState = ({
   hasActiveFilters,
@@ -25,14 +26,20 @@ const EmptyState = ({
   return (
     <View style={styles.emptyState}>
       <Ionicons name={icon} size={64} color={colors.disabled} />
-      <Text style={styles.emptyTitle}>{title || defaultTitle}</Text>
-      <Text style={styles.emptySubtitle}>{subtitle || defaultSubtitle}</Text>
+      <Typography variant="h3" style={styles.emptyTitle}>
+        {title || defaultTitle}
+      </Typography>
+      <Typography variant="body1" style={styles.emptySubtitle}>
+        {subtitle || defaultSubtitle}
+      </Typography>
       {hasActiveFilters && onClearAllFilters && (
         <TouchableOpacity
           style={styles.clearFiltersButton}
           onPress={onClearAllFilters}
         >
-          <Text style={styles.clearFiltersButtonText}>{clearButtonText}</Text>
+          <Typography variant="button" style={styles.clearFiltersButtonText}>
+            {clearButtonText}
+          </Typography>
         </TouchableOpacity>
       )}
     </View>
@@ -44,36 +51,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 40,
+    padding: 40,
   },
   emptyTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 20,
     color: colors.textPrimary,
-    marginTop: 20,
     textAlign: "center",
+    marginTop: 20,
+    marginBottom: 10,
   },
   emptySubtitle: {
     fontSize: 14,
     color: colors.textSecondary,
-    marginTop: 8,
     textAlign: "center",
     lineHeight: 20,
+    marginBottom: 30,
   },
   clearFiltersButton: {
+    backgroundColor: colors.primary,
     paddingHorizontal: 20,
     paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: colors.primary,
     borderRadius: 8,
-    backgroundColor: colors.surface,
-    marginTop: 15,
-    alignItems: "center",
   },
   clearFiltersButtonText: {
+    color: colors.white,
     fontSize: 14,
-    fontWeight: "600",
-    color: colors.primary,
   },
 });
 

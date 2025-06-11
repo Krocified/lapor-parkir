@@ -1,19 +1,21 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../styles/colors";
+import Typography from "../common/Typography";
 
 const LocationSelector = ({ location, onLocationPress, locationError }) => {
   const { t } = useTranslation();
 
   return (
     <View style={styles.section}>
-      <Text
+      <Typography
+        variant="h4"
         style={[styles.sectionTitle, locationError && styles.sectionTitleError]}
       >
         {t("report.location")} {t("report.locationRequired")}
-      </Text>
+      </Typography>
       <TouchableOpacity
         style={[
           styles.locationPickerButton,
@@ -26,17 +28,27 @@ const LocationSelector = ({ location, onLocationPress, locationError }) => {
           <View style={styles.locationTextContainer}>
             {location ? (
               <>
-                <Text style={styles.locationSelectedText}>
+                <Typography
+                  variant="subtitle2"
+                  style={styles.locationSelectedText}
+                >
                   {t("report.locationSelected")}
-                </Text>
-                <Text style={styles.locationAddressText} numberOfLines={2}>
+                </Typography>
+                <Typography
+                  variant="body2"
+                  style={styles.locationAddressText}
+                  numberOfLines={2}
+                >
                   {location.address}
-                </Text>
+                </Typography>
               </>
             ) : (
-              <Text style={styles.locationPlaceholderText}>
+              <Typography
+                variant="body1"
+                style={styles.locationPlaceholderText}
+              >
                 {t("report.locationPlaceholder")}
-              </Text>
+              </Typography>
             )}
           </View>
           <Ionicons
@@ -47,7 +59,9 @@ const LocationSelector = ({ location, onLocationPress, locationError }) => {
         </View>
       </TouchableOpacity>
       {locationError && (
-        <Text style={styles.errorText}>{t("report.locationError")}</Text>
+        <Typography variant="caption" style={styles.errorText}>
+          {t("report.locationError")}
+        </Typography>
       )}
     </View>
   );
@@ -59,7 +73,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: 8,
   },
@@ -82,17 +95,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   locationSelectedText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: semanticColors.successText,
+    color: colors.primary,
     marginBottom: 2,
   },
   locationAddressText: {
-    fontSize: 12,
-    color: colors.textSecondary,
+    color: colors.textPrimary,
+    lineHeight: 18,
   },
   locationPlaceholderText: {
-    fontSize: 14,
     color: semanticColors.inputPlaceholder,
   },
   inputError: {
@@ -103,7 +113,6 @@ const styles = StyleSheet.create({
     color: colors.error,
     fontSize: 12,
     marginTop: 5,
-    fontWeight: "500",
   },
 });
 

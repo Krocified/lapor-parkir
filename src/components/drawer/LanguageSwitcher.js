@@ -1,24 +1,23 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Text, StyleSheet, Modal } from "react-native";
+import { View, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { semanticColors } from "../../styles/colors";
-import i18n from "../../i18n/i18n";
+import Typography from "../common/Typography";
 
 const LanguageSwitcher = () => {
-  const { t } = useTranslation();
+  const { i18n } = useTranslation();
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const languages = [
-    { code: "en", flag: "🇺🇸", label: "EN", name: "English" },
-    { code: "id", flag: "🇮🇩", label: "ID", name: "Bahasa Indonesia" },
+    { code: "en", label: "EN", flag: "🇺🇸", name: "English" },
+    { code: "id", label: "ID", flag: "🇮🇩", name: "Bahasa Indonesia" },
   ];
 
-  const currentLanguage = i18n.language;
   const currentLangData =
-    languages.find((lang) => lang.code === currentLanguage) || languages[0];
+    languages.find((lang) => lang.code === i18n.language) || languages[0];
 
-  const switchLanguage = (langCode) => {
+  const changeLanguage = (langCode) => {
     i18n.changeLanguage(langCode);
     setDropdownVisible(false);
   };
@@ -29,8 +28,12 @@ const LanguageSwitcher = () => {
         style={styles.dropdownButton}
         onPress={() => setDropdownVisible(true)}
       >
-        <Text style={styles.flagText}>{currentLangData.flag}</Text>
-        <Text style={styles.languageCode}>{currentLangData.label}</Text>
+        <Typography variant="caption" style={styles.flagText}>
+          {currentLangData.flag}
+        </Typography>
+        <Typography variant="caption" style={styles.languageCode}>
+          {currentLangData.label}
+        </Typography>
         <Ionicons
           name="chevron-down"
           size={14}
@@ -54,37 +57,30 @@ const LanguageSwitcher = () => {
               <TouchableOpacity
                 key={lang.code}
                 style={[
-                  styles.dropdownItem,
-                  currentLanguage === lang.code && styles.dropdownItemActive,
+                  styles.languageOption,
+                  i18n.language === lang.code && styles.languageOptionActive,
                 ]}
-                onPress={() => switchLanguage(lang.code)}
+                onPress={() => changeLanguage(lang.code)}
               >
-                <Text style={styles.flagText}>{lang.flag}</Text>
+                <Typography variant="caption" style={styles.languageFlag}>
+                  {lang.flag}
+                </Typography>
                 <View style={styles.languageInfo}>
-                  <Text
-                    style={[
-                      styles.languageName,
-                      currentLanguage === lang.code &&
-                        styles.languageNameActive,
-                    ]}
-                  >
+                  <Typography variant="body2" style={styles.languageName}>
                     {lang.name}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.languageCodeSmall,
-                      currentLanguage === lang.code &&
-                        styles.languageCodeActiveSmall,
-                    ]}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    style={styles.languageCodeInOption}
                   >
                     {lang.label}
-                  </Text>
+                  </Typography>
                 </View>
-                {currentLanguage === lang.code && (
+                {i18n.language === lang.code && (
                   <Ionicons
                     name="checkmark"
                     size={16}
-                    color={semanticColors.tabBarActive}
+                    color={semanticColors.headerText}
                   />
                 )}
               </TouchableOpacity>
@@ -139,14 +135,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
   },
-  dropdownItem: {
+  languageOption: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 15,
     paddingVertical: 12,
     gap: 10,
   },
-  dropdownItemActive: {
+  languageOptionActive: {
     backgroundColor: semanticColors.languageSwitcherActiveItem,
   },
   languageInfo: {
@@ -157,15 +153,12 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: semanticColors.languageSwitcherDropdownText,
   },
-  languageNameActive: {
-    color: semanticColors.languageSwitcherActiveText,
+  languageFlag: {
+    fontSize: 14,
   },
-  languageCodeSmall: {
+  languageCodeInOption: {
     fontSize: 12,
     color: semanticColors.languageSwitcherDropdownTextSecondary,
-  },
-  languageCodeActiveSmall: {
-    color: semanticColors.languageSwitcherActiveText,
   },
 });
 

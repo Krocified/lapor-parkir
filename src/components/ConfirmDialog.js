@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../styles/colors";
+import Typography from "./common/Typography";
 
 const ConfirmDialog = ({
   visible,
@@ -62,8 +63,16 @@ const ConfirmDialog = ({
           </View>
 
           <View style={styles.content}>
-            {title && <Text style={styles.title}>{title}</Text>}
-            {message && <Text style={styles.message}>{message}</Text>}
+            {title && (
+              <Typography variant="h3" style={styles.title}>
+                {title}
+              </Typography>
+            )}
+            {message && (
+              <Typography variant="body1" style={styles.message}>
+                {message}
+              </Typography>
+            )}
           </View>
 
           <View style={styles.footer}>
@@ -71,7 +80,9 @@ const ConfirmDialog = ({
               style={[styles.button, styles.cancelButton]}
               onPress={onCancel}
             >
-              <Text style={styles.cancelButtonText}>{finalCancelText}</Text>
+              <Typography variant="button" style={styles.cancelButtonText}>
+                {finalCancelText}
+              </Typography>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -82,7 +93,9 @@ const ConfirmDialog = ({
               ]}
               onPress={onConfirm}
             >
-              <Text style={styles.confirmButtonText}>{finalConfirmText}</Text>
+              <Typography variant="button" style={styles.confirmButtonText}>
+                {finalConfirmText}
+              </Typography>
             </TouchableOpacity>
           </View>
         </View>
@@ -94,85 +107,76 @@ const ConfirmDialog = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: semanticColors.modalOverlay,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
   },
   dialog: {
-    backgroundColor: semanticColors.modalBackground,
+    backgroundColor: colors.background,
     borderRadius: 15,
+    maxWidth: 350,
     width: "100%",
-    maxWidth: 400,
     shadowColor: colors.shadow,
     shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 10,
+    elevation: 8,
   },
   header: {
     alignItems: "center",
-    paddingTop: 25,
-    paddingBottom: 15,
+    paddingTop: 30,
+    paddingBottom: 20,
   },
   content: {
     paddingHorizontal: 25,
     paddingBottom: 20,
-    alignItems: "center",
   },
   title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.textPrimary,
     textAlign: "center",
-    marginBottom: 8,
+    color: colors.textPrimary,
+    marginBottom: 10,
   },
   message: {
-    fontSize: 14,
-    color: colors.textSecondary,
     textAlign: "center",
-    lineHeight: 20,
+    color: colors.textSecondary,
+    lineHeight: 22,
   },
   footer: {
     flexDirection: "row",
     borderTopWidth: 1,
-    borderTopColor: semanticColors.modalBorder,
+    borderTopColor: semanticColors.cardBorder,
   },
   button: {
     flex: 1,
     paddingVertical: 15,
-    paddingHorizontal: 20,
     alignItems: "center",
     justifyContent: "center",
   },
   cancelButton: {
     borderRightWidth: 1,
-    borderRightColor: semanticColors.modalBorder,
+    borderRightColor: semanticColors.cardBorder,
   },
   confirmButton: {
-    // Base confirm button styles
+    // Default confirm button styles
   },
   dangerButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: "rgba(220, 53, 69, 0.1)",
   },
   warningButton: {
-    backgroundColor: colors.warning,
+    backgroundColor: "rgba(255, 193, 7, 0.1)",
   },
   infoButton: {
-    backgroundColor: colors.info,
+    backgroundColor: "rgba(13, 202, 240, 0.1)",
   },
   cancelButtonText: {
-    fontSize: 16,
     color: colors.textSecondary,
-    fontWeight: "500",
   },
   confirmButtonText: {
-    fontSize: 16,
-    color: colors.white,
-    fontWeight: "600",
+    color: colors.primary,
   },
 });
 

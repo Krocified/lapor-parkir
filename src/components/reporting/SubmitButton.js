@@ -1,8 +1,9 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../styles/colors";
+import Typography from "../common/Typography";
 
 const SubmitButton = ({ onSubmit, isSubmitting }) => {
   const { t } = useTranslation();
@@ -18,31 +19,30 @@ const SubmitButton = ({ onSubmit, isSubmitting }) => {
         size={20}
         color={colors.white}
       />
-      <Text style={styles.submitButtonText}>
+      <Typography variant="button" style={styles.submitButtonText}>
         {isSubmitting ? t("report.submittingButton") : t("report.submitButton")}
-      </Text>
+      </Typography>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   submitButton: {
-    backgroundColor: colors.success,
+    backgroundColor: colors.primary,
+    padding: 15,
     borderRadius: 10,
-    padding: 18,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: 8,
     marginTop: 10,
   },
   submitButtonDisabled: {
     backgroundColor: semanticColors.buttonDisabled,
   },
   submitButtonText: {
-    color: semanticColors.buttonPrimaryText,
+    color: colors.white,
     fontSize: 16,
-    fontWeight: "bold",
-    marginLeft: 8,
   },
 });
 

@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
 import colors from "../../../styles/colors";
+import Typography from "../../common/Typography";
 
 const StatsDisplay = ({
   count,
@@ -23,25 +24,23 @@ const StatsDisplay = ({
 
   return (
     <View style={[styles.statsContainer, style]}>
-      <Text style={styles.statsText}>{getMessage()}</Text>
+      <Typography variant="subtitle2" style={styles.statsText}>
+        {getMessage()}
+      </Typography>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   statsContainer: {
+    paddingVertical: 10,
     paddingHorizontal: 15,
-    paddingVertical: 8,
-    flexShrink: 0,
-    height: 44,
-    flexGrow: 0,
+    alignItems: "center",
   },
   statsText: {
     fontSize: 14,
     color: colors.textSecondary,
-    fontWeight: "500",
-    paddingHorizontal: 15,
-    marginBottom: 5,
+    textAlign: "center",
   },
 });
 

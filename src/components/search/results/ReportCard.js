@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../../styles/colors";
@@ -8,6 +8,7 @@ import {
   getViolationLabel,
   getPlateTypeLabel,
 } from "../../../i18n/translations";
+import Typography from "../../common/Typography";
 
 const ReportCard = React.memo(({ item, onDeleteReport }) => {
   const { t } = useTranslation();
@@ -25,9 +26,9 @@ const ReportCard = React.memo(({ item, onDeleteReport }) => {
         style={[styles.plateTypeBadge, { backgroundColor: typeInfo.color }]}
       >
         <Ionicons name={typeInfo.icon} size={12} color={colors.white} />
-        <Text style={styles.plateTypeBadgeText}>
+        <Typography variant="overline" style={styles.plateTypeBadgeText}>
           {getPlateTypeLabel(plateType, t)}
-        </Text>
+        </Typography>
       </View>
     );
   };
@@ -37,7 +38,9 @@ const ReportCard = React.memo(({ item, onDeleteReport }) => {
       <View style={styles.reportHeader}>
         <View style={styles.plateSection}>
           <View style={styles.plateContainer}>
-            <Text style={styles.plateNumber}>{item.plateNumber}</Text>
+            <Typography variant="h4" style={styles.plateNumber}>
+              {item.plateNumber}
+            </Typography>
           </View>
           {renderPlateTypeBadge(item.plateType)}
         </View>
@@ -57,9 +60,9 @@ const ReportCard = React.memo(({ item, onDeleteReport }) => {
             size={16}
             color={colors.textSecondary}
           />
-          <Text style={styles.infoText}>
+          <Typography variant="body2" style={styles.infoText}>
             {item.date} at {item.time}
-          </Text>
+          </Typography>
         </View>
 
         <View style={styles.infoRow}>
@@ -68,24 +71,28 @@ const ReportCard = React.memo(({ item, onDeleteReport }) => {
             size={16}
             color={colors.textSecondary}
           />
-          <Text style={styles.infoText} numberOfLines={2}>
+          <Typography variant="body2" style={styles.infoText} numberOfLines={2}>
             {item.location.address}
-          </Text>
+          </Typography>
         </View>
 
         <View style={styles.violationsContainer}>
-          <Text style={styles.violationsLabel}>
+          <Typography variant="subtitle2" style={styles.violationsLabel}>
             {t("search.violationsLabel")}
-          </Text>
-          <Text style={styles.violationsText}>
+          </Typography>
+          <Typography variant="body2" style={styles.violationsText}>
             {formatViolations(item.violations)}
-          </Text>
+          </Typography>
         </View>
 
         {item.notes ? (
           <View style={styles.notesContainer}>
-            <Text style={styles.notesLabel}>Notes:</Text>
-            <Text style={styles.notesText}>{item.notes}</Text>
+            <Typography variant="subtitle2" style={styles.notesLabel}>
+              Notes:
+            </Typography>
+            <Typography variant="body2" style={styles.notesText}>
+              {item.notes}
+            </Typography>
           </View>
         ) : null}
       </View>
@@ -97,39 +104,40 @@ const styles = StyleSheet.create({
   reportCard: {
     backgroundColor: semanticColors.cardBackground,
     borderRadius: 12,
-    padding: 15,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: semanticColors.cardBorder,
+    marginHorizontal: 15,
+    marginVertical: 8,
     shadowColor: colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowRadius: 4,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: semanticColors.cardBorder,
   },
   reportHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 15,
+    padding: 15,
+    paddingBottom: 10,
   },
   plateSection: {
-    flexDirection: "column",
-    alignItems: "flex-start",
+    flex: 1,
   },
   plateContainer: {
-    backgroundColor: semanticColors.plateNumberBackground,
-    paddingHorizontal: 15,
+    backgroundColor: colors.primary,
+    paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: 6,
+    alignSelf: "flex-start",
+    marginBottom: 8,
   },
   plateNumber: {
-    color: semanticColors.plateNumberText,
+    color: colors.white,
     fontSize: 16,
-    fontWeight: "bold",
     letterSpacing: 1,
   },
   plateTypeBadge: {
@@ -137,66 +145,53 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 6,
-    marginTop: 6,
+    borderRadius: 12,
+    alignSelf: "flex-start",
     gap: 4,
   },
   plateTypeBadgeText: {
     color: colors.white,
     fontSize: 10,
-    fontWeight: "600",
-    textTransform: "uppercase",
   },
   deleteButton: {
     padding: 8,
     borderRadius: 20,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.primary,
+    backgroundColor: semanticColors.iconBackground,
   },
   reportContent: {
-    gap: 10,
+    paddingHorizontal: 15,
+    paddingBottom: 15,
   },
   infoRow: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 8,
+    gap: 10,
   },
   infoText: {
-    marginLeft: 8,
-    fontSize: 14,
-    color: colors.textPrimary,
+    color: colors.textSecondary,
     flex: 1,
   },
   violationsContainer: {
-    marginTop: 5,
+    marginTop: 10,
+    marginBottom: 8,
   },
   violationsLabel: {
-    fontSize: 14,
-    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: 4,
   },
   violationsText: {
-    fontSize: 14,
-    color: semanticColors.violationText,
-    fontWeight: "500",
+    color: colors.textSecondary,
   },
   notesContainer: {
-    marginTop: 5,
-    padding: 10,
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 8,
+    marginTop: 8,
   },
   notesLabel: {
-    fontSize: 14,
-    fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: 4,
   },
   notesText: {
-    fontSize: 14,
     color: colors.textSecondary,
-    lineHeight: 20,
   },
 });
 

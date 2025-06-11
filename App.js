@@ -4,8 +4,8 @@ import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import "./src/i18n/i18n"; // Initialize i18n
-import { fontConfig } from "./src/styles/fonts";
 import DrawerNavigator from "./src/components/drawer/DrawerNavigator";
+import { fontConfig } from "./src/styles/fonts";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
