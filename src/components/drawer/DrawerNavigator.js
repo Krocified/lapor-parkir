@@ -33,7 +33,7 @@ function DrawerNavigator() {
     },
     drawerLabelStyle: {
       fontSize: 16,
-      marginLeft: -20,
+      marginLeft: 10,
     },
     drawerActiveBackgroundColor: semanticColors.drawerActiveBackground,
     drawerActiveTintColor: semanticColors.tabBarActive,
@@ -47,7 +47,7 @@ function DrawerNavigator() {
         component={MainTabNavigator}
         options={{
           drawerLabel: ({ focused, color }) => (
-            <Typography style={{ color, fontSize: 16, marginLeft: -20 }}>
+            <Typography style={{ color, fontSize: 16, marginLeft: -10 }}>
               {t("navigation.home")}
             </Typography>
           ),
@@ -61,7 +61,7 @@ function DrawerNavigator() {
         component={AboutScreen}
         options={{
           drawerLabel: ({ focused, color }) => (
-            <Typography style={{ color, fontSize: 16, marginLeft: -20 }}>
+            <Typography style={{ color, fontSize: 16, marginLeft: -10 }}>
               {t("navigation.about")}
             </Typography>
           ),

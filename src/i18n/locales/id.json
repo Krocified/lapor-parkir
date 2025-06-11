@@ -4,7 +4,8 @@
         "searchReports": "Cari Laporan",
         "laporParkir": "Lapor Parkir",
         "home": "Beranda",
-        "about": "Tentang"
+        "about": "Tentang",
+        "main": "Lapor Parkir"
     },
     "about": {
         "description": "Lapor Parkir adalah aplikasi berbasis komunitas yang membantu warga melaporkan pelanggaran parkir dan berkontribusi pada mobilitas urban yang lebih baik. Bersama-sama, kita dapat menciptakan ruang publik yang lebih teratur dan mudah diakses.",

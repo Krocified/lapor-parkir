@@ -4,7 +4,8 @@
         "searchReports": "Search Reports",
         "laporParkir": "Lapor Parkir",
         "home": "Home",
-        "about": "About"
+        "about": "About",
+        "main": "Lapor Parkir"
     },
     "about": {
         "description": "Lapor Parkir is a community-driven app that helps citizens report parking violations and contribute to better urban mobility. Together, we can create more organized and accessible public spaces.",
