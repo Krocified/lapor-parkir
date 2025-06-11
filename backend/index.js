@@ -2,14 +2,19 @@
 require("dotenv").config({ path: "../.env" });
 
 const fastify = require("fastify")({
-  logger: false, // Disable logger for Vercel
+  logger: {
+    level: process.env.NODE_ENV === "production" ? "warn" : "info",
+  },
 });
 
 const { getReportsCollection } = require("./db");
 
 // Register CORS
 fastify.register(require("@fastify/cors"), {
-  origin: true,
+  origin:
+    process.env.NODE_ENV === "production"
+      ? process.env.FRONTEND_URL || true
+      : true,
 });
 
 // Health check
@@ -25,6 +30,7 @@ fastify.get("/", async (request, reply) => {
       port: process.env.PORT || 3000,
       database: "MongoDB Atlas",
       reports_count: count,
+      uptime: process.uptime(),
     };
   } catch (error) {
     return {
@@ -149,28 +155,39 @@ fastify.delete("/api/reports/:id", async (request, reply) => {
   }
 });
 
-// For Vercel deployment
-if (process.env.NODE_ENV === "production") {
-  module.exports = async (req, res) => {
-    await fastify.ready();
-    fastify.server.emit("request", req, res);
-  };
-} else {
-  // For local development
-  const start = async () => {
-    try {
-      const port = process.env.PORT || 3000;
-      await fastify.listen({ port, host: "0.0.0.0" });
-      console.log(`🚀 Server running on port ${port}`);
-      console.log(
-        `📧 Support: ${process.env.SUPPORT_EMAIL || "Not configured"}`
-      );
-      console.log(`🔗 GitHub: ${process.env.GITHUB_URL || "Not configured"}`);
-    } catch (err) {
-      fastify.log.error(err);
-      process.exit(1);
-    }
-  };
+// Graceful shutdown
+process.on("SIGTERM", async () => {
+  console.log("💀 SIGTERM received, shutting down gracefully...");
+  await fastify.close();
+  process.exit(0);
+});
 
-  start();
-}
+process.on("SIGINT", async () => {
+  console.log("💀 SIGINT received, shutting down gracefully...");
+  await fastify.close();
+  process.exit(0);
+});
+
+// Start server
+const start = async () => {
+  try {
+    const port = process.env.PORT || 3000;
+    const host = process.env.HOST || "0.0.0.0";
+
+    await fastify.listen({ port, host });
+
+    console.log(`🚀 Server running on ${host}:${port}`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
+    console.log(`📧 Support: ${process.env.SUPPORT_EMAIL || "Not configured"}`);
+    console.log(`🔗 GitHub: ${process.env.GITHUB_URL || "Not configured"}`);
+
+    if (process.env.FRONTEND_URL) {
+      console.log(`📱 Frontend: ${process.env.FRONTEND_URL}`);
+    }
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
+
+start();

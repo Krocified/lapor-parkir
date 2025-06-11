@@ -4,8 +4,9 @@
     "description": "Backend for Lapor Parkir",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js",
+        "start": "NODE_ENV=production node index.js",
         "dev": "nodemon index.js",
+        "prod": "NODE_ENV=production nodemon index.js",
         "deploy": "vercel --prod",
         "deploy-preview": "vercel"
     },
@@ -13,8 +14,7 @@
         "fastify",
         "parking",
         "api",
-        "vercel",
-        "serverless",
+        "nodejs",
         "mongodb"
     ],
     "author": "",
