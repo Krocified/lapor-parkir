@@ -7,7 +7,6 @@ import {
   Platform,
   Animated,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import LocationPicker from "../components/LocationPicker";
 import InAppNotification from "../components/InAppNotification";
@@ -17,6 +16,7 @@ import ViolationTypeSelector from "../components/reporting/ViolationTypeSelector
 import LocationSelector from "../components/reporting/LocationSelector";
 import NotesInput from "../components/reporting/NotesInput";
 import SubmitButton from "../components/reporting/SubmitButton";
+import ApiService from "../services/api";
 import colors from "../styles/colors";
 
 export default function ReportScreen() {
@@ -130,31 +130,14 @@ export default function ReportScreen() {
 
     setIsSubmitting(true);
     try {
-      const report = {
-        id: Date.now().toString(),
-        plateNumber: plateNumber.toUpperCase().trim(),
-        plateType: plateType,
+      const reportData = {
+        licensePlate: plateNumber.toUpperCase().trim(),
         violations: selectedViolations,
-        location: {
-          latitude: location.latitude,
-          longitude: location.longitude,
-          address: location.address,
-        },
+        location: location.address,
         notes: notes.trim(),
-        timestamp: new Date().toISOString(),
-        date: new Date().toLocaleDateString(),
-        time: new Date().toLocaleTimeString(),
       };
 
-      // Get existing reports
-      const existingReports = await AsyncStorage.getItem("parking_reports");
-      const reports = existingReports ? JSON.parse(existingReports) : [];
-
-      // Add new report
-      reports.unshift(report);
-
-      // Save back to storage
-      await AsyncStorage.setItem("parking_reports", JSON.stringify(reports));
+      await ApiService.createReport(reportData);
 
       // Reset form first
       resetForm();

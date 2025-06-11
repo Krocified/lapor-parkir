@@ -1,0 +1,25 @@
+{
+    "name": "lapor-parkir-backend",
+    "version": "1.0.0",
+    "description": "Backend for Lapor Parkir",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js"
+    },
+    "keywords": [
+        "fastify",
+        "parking",
+        "api"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "fastify": "^4.24.3",
+        "@fastify/cors": "^8.4.0",
+        "@fastify/env": "^4.2.0"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.2"
+    }
+}

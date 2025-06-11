@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Navigate to frontend directory
+cd frontend
+
 # Build the web version
 echo "🏗️  Building web version..."
 npx expo export --platform web
@@ -18,6 +21,9 @@ sed -i 's|href="/favicon.ico"|href="./favicon.ico"|g' dist/index.html
 sed -i 's|src="/_expo/|src="./_expo/|g' dist/index.html
 echo "✅ Asset paths fixed!"
 
+# Go back to root directory for git operations
+cd ..
+
 # Add dist folder to git and deploy to gh-pages branch
 echo "🚀 Deploying to GitHub Pages..."
 
@@ -33,7 +39,7 @@ fi
 git push origin main
 
 # Deploy to gh-pages using subtree
-git subtree push --prefix dist origin gh-pages
+git subtree push --prefix frontend/dist origin gh-pages
 
 echo "🎉 Deployment complete!"
 echo "Your app will be available at: https://krocified.github.io/lapor-parkir"

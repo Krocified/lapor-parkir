@@ -1,6 +1,23 @@
 # Lapor Parkir - Bad Parking Reporter App
 
-A React Native mobile-first web app for reporting and tracking parking violations. Built with Expo for cross-platform compatibility.
+A React Native mobile-first web app for reporting and tracking parking violations. Built with Expo for cross-platform compatibility and designed with a modular frontend/backend architecture.
+
+## Project Structure
+
+This project is organized into separate frontend and backend directories:
+
+```
+lapor-parkir/
+├── frontend/          # React Native/Expo mobile app
+│   ├── src/
+│   ├── App.js
+│   ├── package.json
+│   └── ...
+├── backend/           # Backend API (planned)
+├── README.md          # Project documentation
+├── .env.example       # Environment variables template
+└── deploy.sh          # Deployment script
+```
 
 ## Features
 
@@ -37,6 +54,8 @@ A React Native mobile-first web app for reporting and tracking parking violation
 
 ## Tech Stack
 
+### Frontend
+
 - **React Native**: Cross-platform mobile development
 - **Expo**: Development platform and build system
 - **React Navigation**: Tab-based navigation
@@ -44,7 +63,15 @@ A React Native mobile-first web app for reporting and tracking parking violation
 - **Expo Location**: GPS and geocoding services
 - **Expo Vector Icons**: Beautiful icons
 
+### Backend
+
+- **Fastify**: Ultra-fast and lightweight Node.js framework
+- **@fastify/cors**: Cross-origin resource sharing
+- **@fastify/env**: Environment configuration
+
 ## Installation & Setup
+
+### Frontend Setup
 
 1. **Clone the repository**
 
@@ -53,9 +80,10 @@ A React Native mobile-first web app for reporting and tracking parking violation
    cd lapor-parkir
    ```
 
-2. **Install dependencies**
+2. **Navigate to frontend directory and install dependencies**
 
    ```bash
+   cd frontend
    npm install
    ```
 
@@ -65,6 +93,30 @@ A React Native mobile-first web app for reporting and tracking parking violation
    npm run ios    # For iOS (requires macOS)
    npm run android # For Android
    npm start      # For Expo development tools
+   ```
+
+### Backend Setup
+
+1. **Navigate to backend directory and install dependencies**
+
+   ```bash
+   cd backend
+   npm install
+   ```
+
+2. **Start the backend server**
+
+   ```bash
+   npm run dev    # Development with auto-reload
+   npm start      # Production mode
+   ```
+
+   The API will be available at `http://localhost:3000`
+
+3. **Test the API**
+   ```bash
+   curl http://localhost:3000/
+   # Should return: {"message":"Lapor Parkir API is running!"}
    ```
 
 ## Usage
@@ -98,15 +150,20 @@ The app requests the following permissions:
 
 ## Development
 
-### Project Structure
+### Frontend Structure
 
 ```
-src/
+frontend/src/
 ├── screens/
 │   ├── ReportScreen.js    # Main reporting interface
 │   └── SearchScreen.js    # Search and view reports
-├── components/            # Reusable components (future)
-└── utils/                 # Utility functions (future)
+├── components/            # Reusable components
+├── utils/                 # Utility functions
+├── hooks/                 # Custom React hooks
+├── constants/             # App constants
+├── config/                # Configuration files
+├── i18n/                  # Internationalization
+└── styles/                # Styling files
 ```
 
 ### Key Components
@@ -115,16 +172,27 @@ src/
 - **ReportScreen**: Form for submitting new violations
 - **SearchScreen**: List and search existing reports
 
+## Deployment
+
+Run the deployment script from the root directory:
+
+```bash
+./deploy.sh
+```
+
+This will build the frontend and deploy it to GitHub Pages.
+
 ## Future Enhancements
 
+- **Backend API**: RESTful API for data management
 - **Photo Capture**: Add camera integration for evidence photos
 - **Export Data**: Export reports as PDF or CSV
 - **Location Map**: Interactive map view of violations
 - **Statistics**: Analytics dashboard for violation trends
-- **Sync**: Cloud synchronization across devices
-- **Validation**: Enhanced plate number format validation
-- **Categories**: Custom violation categories
-- **Notifications**: Reminders and alerts
+- **Cloud Sync**: Synchronization across devices via backend
+- **User Authentication**: User accounts and report ownership
+- **Admin Dashboard**: Management interface for violations
+- **Real-time Updates**: WebSocket connections for live updates
 
 ## Contributing
 

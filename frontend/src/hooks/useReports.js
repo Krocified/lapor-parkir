@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import ApiService from "../services/api";
 
 export const useReports = (onError) => {
   const [reports, setReports] = useState([]);
@@ -10,10 +10,9 @@ export const useReports = (onError) => {
 
   const loadReports = async () => {
     try {
-      const storedReports = await AsyncStorage.getItem("parking_reports");
-      const parsedReports = storedReports ? JSON.parse(storedReports) : [];
-      setReports(parsedReports);
-      return parsedReports;
+      const fetchedReports = await ApiService.getReports();
+      setReports(fetchedReports);
+      return fetchedReports;
     } catch (error) {
       console.error("Error loading reports:", error);
       if (onError) {
@@ -33,15 +32,10 @@ export const useReports = (onError) => {
 
   const deleteReport = async (reportId) => {
     try {
-      const updatedReports = reports.filter((report) => report.id !== reportId);
-
-      // Save to AsyncStorage
-      await AsyncStorage.setItem(
-        "parking_reports",
-        JSON.stringify(updatedReports)
-      );
+      await ApiService.deleteReport(reportId);
 
       // Update local state
+      const updatedReports = reports.filter((report) => report.id !== reportId);
       setReports(updatedReports);
 
       // Force list re-render
