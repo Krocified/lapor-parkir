@@ -87,17 +87,19 @@ const ViolationTypeSelector = ({
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 25,
+    marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 17,
+    fontWeight: "600",
     color: colors.textPrimary,
     marginBottom: 8,
   },
   sectionSubtitle: {
     fontSize: 14,
     color: colors.textSecondary,
-    marginBottom: 12,
+    marginBottom: 16,
+    lineHeight: 20,
   },
   sectionTitleError: {
     color: colors.error,
@@ -105,42 +107,56 @@ const styles = StyleSheet.create({
   violationsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    gap: 12,
   },
   violationItem: {
     backgroundColor: semanticColors.inputBackground,
-    borderRadius: 10,
-    padding: 15,
+    borderRadius: 12,
+    padding: 12,
     alignItems: "center",
     width: "48%",
-    borderWidth: 2,
-    borderColor: colors.primary,
-    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "rgba(0, 0, 0, 0.08)",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   violationItemSelected: {
     backgroundColor: colors.primary,
-    borderColor: colors.primaryDark,
+    borderColor: colors.primary,
+    shadowColor: colors.primary,
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   violationText: {
     marginTop: 8,
-    fontSize: 12,
+    fontSize: 13,
+    fontWeight: "500",
     color: colors.textPrimary,
     textAlign: "center",
   },
   violationTextSelected: {
     color: colors.white,
+    fontWeight: "600",
   },
   violationsGridError: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: colors.error,
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: colors.errorLight,
+    borderRadius: 12,
+    padding: 12,
+    backgroundColor: "rgba(255, 59, 48, 0.05)",
   },
   errorText: {
     color: colors.error,
     fontSize: 12,
-    marginTop: 5,
+    marginTop: 6,
+    fontWeight: "500",
   },
 });
 
