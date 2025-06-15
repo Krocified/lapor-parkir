@@ -37,30 +37,24 @@ export default function AboutScreen() {
           </View>
 
           <Typography variant="body1" style={styles.description}>
-            {t(
-              "about.description",
-              "Lapor Parkir is a community-driven app that helps citizens report parking violations and contribute to better urban mobility. Together, we can create more organized and accessible public spaces."
-            )}
+            {t("about.description")}
           </Typography>
         </View>
 
         {/* Features Section */}
         <View style={styles.section}>
           <Typography variant="h2" style={styles.sectionTitle}>
-            {t("about.features", "Features")}
+            {t("about.features")}
           </Typography>
 
           <View style={styles.featureItem}>
             <Ionicons name="camera-outline" size={24} color={colors.primary} />
             <View style={styles.featureText}>
               <Typography variant="subtitle1" style={styles.featureTitle}>
-                {t("about.reportViolations", "Report Violations")}
+                {t("about.reportViolations")}
               </Typography>
               <Typography variant="body2" style={styles.featureDescription}>
-                {t(
-                  "about.reportViolationsDesc",
-                  "Easily report parking violations with location and violation type details."
-                )}
+                {t("about.reportViolationsDesc")}
               </Typography>
             </View>
           </View>
@@ -69,13 +63,10 @@ export default function AboutScreen() {
             <Ionicons name="search-outline" size={24} color={colors.primary} />
             <View style={styles.featureText}>
               <Typography variant="subtitle1" style={styles.featureTitle}>
-                {t("about.searchReports", "Search Reports")}
+                {t("about.searchReports")}
               </Typography>
               <Typography variant="body2" style={styles.featureDescription}>
-                {t(
-                  "about.searchReportsDesc",
-                  "Find and filter violation reports by location, date, and violation type."
-                )}
+                {t("about.searchReportsDesc")}
               </Typography>
             </View>
           </View>
@@ -84,13 +75,10 @@ export default function AboutScreen() {
             <Ionicons name="shield-outline" size={24} color={colors.primary} />
             <View style={styles.featureText}>
               <Typography variant="subtitle1" style={styles.featureTitle}>
-                {t("about.plateTypes", "Special Plate Recognition")}
+                {t("about.plateTypes")}
               </Typography>
               <Typography variant="body2" style={styles.featureDescription}>
-                {t(
-                  "about.plateTypesDesc",
-                  "Identify and categorize different vehicle plate types including police, diplomatic, and more."
-                )}
+                {t("about.plateTypesDesc")}
               </Typography>
             </View>
           </View>
@@ -99,20 +87,17 @@ export default function AboutScreen() {
         {/* Developer Section */}
         <View style={styles.section}>
           <Typography variant="h2" style={styles.sectionTitle}>
-            {t("about.developer", "Developer")}
+            {t("about.developer")}
           </Typography>
           <Typography variant="body1" style={styles.text}>
-            {t(
-              "about.developerInfo",
-              "This app was developed as part of a community initiative to improve urban mobility and parking compliance."
-            )}
+            {t("about.developerInfo")}
           </Typography>
         </View>
 
         {/* Contact Section */}
         <View style={styles.section}>
           <Typography variant="h2" style={styles.sectionTitle}>
-            {t("about.contact", "Contact & Support")}
+            {t("about.contact")}
           </Typography>
 
           <TouchableOpacity
@@ -142,21 +127,17 @@ export default function AboutScreen() {
             {t("about.legal", "Legal")}
           </Typography>
           <Typography variant="body1" style={styles.text}>
-            {t(
-              "about.disclaimer",
-              "This app is for community use only. Please verify all reports with local authorities before taking any action."
-            )}
+            {t("about.disclaimer")}
           </Typography>
         </View>
 
         {/* Attribution */}
         <View style={styles.footer}>
           <Typography variant="subtitle1" style={styles.footerText}>
-            {t("about.madeWith", "Made with ❤️ for better cities")}
+            {t("about.madeWith")}
           </Typography>
           <Typography variant="caption" style={styles.copyright}>
-            © 2025 Lapor Parkir.{" "}
-            {t("about.allRightsReserved", "All rights reserved.")}
+            © 2025 Lapor Parkir. {t("about.allRightsReserved")}
           </Typography>
         </View>
       </View>
