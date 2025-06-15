@@ -19,7 +19,7 @@ const SearchResults = ({
     [onDeleteReport]
   );
 
-  const keyExtractor = React.useCallback((item) => item.id, []);
+  const keyExtractor = React.useCallback((item) => item._id, []);
 
   if (isLoading) {
     return <LoadingState />;
