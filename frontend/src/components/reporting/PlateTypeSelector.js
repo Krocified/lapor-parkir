@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../styles/colors";
@@ -17,6 +17,11 @@ const PlateTypeSelector = ({
 
   const getCurrentPlateType = () => {
     return PLATE_TYPES.find((type) => type.id === plateType) || PLATE_TYPES[0];
+  };
+
+  const handlePlateTypeChange = (type) => {
+    onPlateTypeChange(type);
+    onToggleExpanded(); // Auto close after selection
   };
 
   return (
@@ -74,7 +79,7 @@ const PlateTypeSelector = ({
                   styles.plateTypeItem,
                   plateType === type.id && styles.plateTypeItemSelected,
                 ]}
-                onPress={() => onPlateTypeChange(type.id)}
+                onPress={() => handlePlateTypeChange(type.id)}
               >
                 <Ionicons
                   name={type.icon}
@@ -104,12 +109,12 @@ const PlateTypeSelector = ({
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 25,
+    marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 18,
-    color: colors.textPrimary,
-    marginBottom: 8,
+    fontSize: 16,
+    fontWeight: "600",
+    color: colors.text,
   },
   sectionSubtitle: {
     fontSize: 14,
@@ -117,17 +122,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   plateTypeSectionHeader: {
-    backgroundColor: semanticColors.inputBackground,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: semanticColors.inputBorder,
     marginBottom: 8,
   },
   plateTypeHeaderContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 15,
+    paddingVertical: 8,
   },
   plateTypeHeaderRight: {
     flexDirection: "row",
@@ -138,13 +139,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    backgroundColor: colors.surfaceSecondary,
   },
   currentPlateTypeText: {
-    fontSize: 12,
+    fontSize: 14,
+    color: colors.text,
   },
   plateTypeSectionTitle: {
     marginBottom: 0,
@@ -152,13 +150,14 @@ const styles = StyleSheet.create({
   plateTypesGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    gap: 10,
     marginTop: 8,
+    justifyContent: "center",
   },
   plateTypeItem: {
     backgroundColor: semanticColors.inputBackground,
     borderRadius: 8,
-    padding: 10,
+    padding: 12,
     alignItems: "center",
     minWidth: "30%",
     flexBasis: "30%",
@@ -171,7 +170,7 @@ const styles = StyleSheet.create({
   },
   plateTypeText: {
     marginTop: 4,
-    fontSize: 10,
+    fontSize: 14,
     textAlign: "center",
   },
   plateTypeTextSelected: {

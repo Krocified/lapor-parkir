@@ -12,6 +12,7 @@ import LocationPicker from "../components/LocationPicker";
 import InAppNotification from "../components/InAppNotification";
 import PlateNumberInput from "../components/reporting/PlateNumberInput";
 import PlateTypeSelector from "../components/reporting/PlateTypeSelector";
+import VehicleTypeSelector from "../components/reporting/VehicleTypeSelector";
 import ViolationTypeSelector from "../components/reporting/ViolationTypeSelector";
 import LocationSelector from "../components/reporting/LocationSelector";
 import NotesInput from "../components/reporting/NotesInput";
@@ -24,6 +25,8 @@ export default function ReportScreen() {
 
   const [plateNumber, setPlateNumber] = useState("");
   const [plateType, setPlateType] = useState("regular");
+  const [vehicleType, setVehicleType] = useState("car");
+  const [vehicleTypeExpanded, setVehicleTypeExpanded] = useState(false);
   const [selectedViolations, setSelectedViolations] = useState([]);
   const [location, setLocation] = useState(null);
   const [notes, setNotes] = useState("");
@@ -132,6 +135,7 @@ export default function ReportScreen() {
     try {
       const reportData = {
         licensePlate: plateNumber.toUpperCase().trim(),
+        vehicleType: vehicleType,
         violations: selectedViolations,
         location: location.address,
         notes: notes.trim(),
@@ -155,6 +159,8 @@ export default function ReportScreen() {
   const resetForm = () => {
     setPlateNumber("");
     setPlateType("regular");
+    setVehicleType("car");
+    setVehicleTypeExpanded(false);
     setSelectedViolations([]);
     setNotes("");
     setLocation(null);
@@ -187,6 +193,15 @@ export default function ReportScreen() {
             plateNumber={plateNumber}
             onPlateNumberChange={handlePlateChange}
             plateError={plateError}
+          />
+
+          <VehicleTypeSelector
+            vehicleType={vehicleType}
+            onVehicleTypeChange={setVehicleType}
+            isExpanded={vehicleTypeExpanded}
+            onToggleExpanded={() =>
+              setVehicleTypeExpanded(!vehicleTypeExpanded)
+            }
           />
 
           <PlateTypeSelector
