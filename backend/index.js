@@ -183,7 +183,11 @@ process.on("SIGINT", async () => {
 // Start the server
 const start = async () => {
   try {
-    const serverUrl = process.env.SERVER_URL || "http://0.0.0.0:3000";
+    // Prioritize PORT if it exists
+    const serverUrl = process.env.PORT
+      ? `http://0.0.0.0:${process.env.PORT}`
+      : process.env.SERVER_URL || "http://0.0.0.0:3000";
+
     const [host, port] = serverUrl.replace("http://", "").split(":");
 
     await fastify.listen({ port, host });
