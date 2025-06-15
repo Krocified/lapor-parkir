@@ -177,12 +177,6 @@ const start = async () => {
 
     console.log(`🚀 Server running on ${host}:${port}`);
     console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
-    console.log(`📧 Support: ${process.env.SUPPORT_EMAIL || "Not configured"}`);
-    console.log(`🔗 GitHub: ${process.env.GITHUB_URL || "Not configured"}`);
-
-    if (process.env.FRONTEND_URL) {
-      console.log(`📱 Frontend: ${process.env.FRONTEND_URL}`);
-    }
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
