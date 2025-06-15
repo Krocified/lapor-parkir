@@ -37,6 +37,7 @@ const SearchFilters = ({
   onClearFilters,
   reportsCount,
   hasActiveFilters,
+  onRefresh,
 }) => {
   const { t } = useTranslation();
   const [showPlateTypeModal, setShowPlateTypeModal] = useState(false);
@@ -191,7 +192,11 @@ const SearchFilters = ({
       </ScrollView>
 
       {/* Stats */}
-      <StatsDisplay count={reportsCount} hasActiveFilters={hasActiveFilters} />
+      <StatsDisplay
+        count={reportsCount}
+        hasActiveFilters={hasActiveFilters}
+        onRefresh={onRefresh}
+      />
 
       {/* Plate Type Modal */}
       <FilterModal

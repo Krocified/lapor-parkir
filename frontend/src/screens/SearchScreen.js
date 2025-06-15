@@ -74,6 +74,7 @@ export default function SearchScreen() {
         onClearFilters={clearAllFilters}
         reportsCount={filteredReports.length}
         hasActiveFilters={hasActiveFilters}
+        onRefresh={onRefresh}
       />
 
       {/* Search Results */}
