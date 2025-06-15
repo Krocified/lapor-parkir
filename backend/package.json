@@ -20,15 +20,15 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "fastify": "^4.24.3",
         "@fastify/cors": "^8.4.0",
         "@fastify/env": "^4.2.0",
         "dotenv": "^16.3.1",
+        "fastify": "^4.24.3",
         "mongodb": "^6.3.0"
     },
     "devDependencies": {
         "nodemon": "^3.0.2",
-        "vercel": "^32.5.0"
+        "vercel": "^43.0.0"
     },
     "engines": {
         "node": ">=18.0.0"

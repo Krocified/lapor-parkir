@@ -168,36 +168,26 @@ process.on("SIGINT", async () => {
   process.exit(0);
 });
 
-// For Vercel serverless deployment
-if (process.env.VERCEL) {
-  module.exports = async (req, res) => {
-    await fastify.ready();
-    fastify.server.emit("request", req, res);
-  };
-} else {
-  // Traditional server
-  const start = async () => {
-    try {
-      const port = process.env.PORT || 3000;
-      const host = process.env.HOST || "0.0.0.0";
+// Start the server
+const start = async () => {
+  try {
+    const serverUrl = process.env.SERVER_URL || "http://0.0.0.0:3000";
+    const [host, port] = serverUrl.replace("http://", "").split(":");
 
-      await fastify.listen({ port, host });
+    await fastify.listen({ port, host });
 
-      console.log(`🚀 Server running on ${host}:${port}`);
-      console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
-      console.log(
-        `📧 Support: ${process.env.SUPPORT_EMAIL || "Not configured"}`
-      );
-      console.log(`🔗 GitHub: ${process.env.GITHUB_URL || "Not configured"}`);
+    console.log(`🚀 Server running on ${host}:${port}`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
+    console.log(`📧 Support: ${process.env.SUPPORT_EMAIL || "Not configured"}`);
+    console.log(`🔗 GitHub: ${process.env.GITHUB_URL || "Not configured"}`);
 
-      if (process.env.FRONTEND_URL) {
-        console.log(`📱 Frontend: ${process.env.FRONTEND_URL}`);
-      }
-    } catch (err) {
-      fastify.log.error(err);
-      process.exit(1);
+    if (process.env.FRONTEND_URL) {
+      console.log(`📱 Frontend: ${process.env.FRONTEND_URL}`);
     }
-  };
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
 
-  start();
-}
+start();
