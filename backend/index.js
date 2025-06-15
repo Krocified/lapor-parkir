@@ -11,10 +11,9 @@ const { getReportsCollection } = require("./db");
 
 // Register CORS
 fastify.register(require("@fastify/cors"), {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? process.env.FRONTEND_URL || true
-      : true,
+  origin: true, // Allow all origins in development
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
 });
 
 // Health check
