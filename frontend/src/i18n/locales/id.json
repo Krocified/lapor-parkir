@@ -84,6 +84,7 @@
         "filterNotes": "Catatan",
         "plateTypesFilter": "Jenis Plat",
         "violationsFilter": "Pelanggaran",
+        "dateFilters": "Filter Tanggal",
         "dateFilterAny": "Semua Tanggal",
         "dateFilterToday": "Hari Ini",
         "dateFilterYesterday": "Kemarin",

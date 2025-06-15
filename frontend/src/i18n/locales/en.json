@@ -84,6 +84,7 @@
         "filterNotes": "Notes",
         "plateTypesFilter": "Plate Types",
         "violationsFilter": "Violations",
+        "dateFilters": "Date Filters",
         "dateFilterAny": "Any Date",
         "dateFilterToday": "Today",
         "dateFilterYesterday": "Yesterday",
