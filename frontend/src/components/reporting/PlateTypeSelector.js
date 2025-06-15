@@ -68,9 +68,6 @@ const PlateTypeSelector = ({
 
       {plateTypeExpanded && (
         <>
-          <Typography variant="body2" style={styles.sectionSubtitle}>
-            {t("report.plateTypeSubtitle")}
-          </Typography>
           <View style={styles.plateTypesGrid}>
             {PLATE_TYPES.map((type) => (
               <TouchableOpacity

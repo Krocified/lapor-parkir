@@ -111,7 +111,9 @@
         "loadError": "Gagal memuat laporan",
         "reportStats_one": "{{count}} laporan",
         "reportStats_other": "{{count}} laporan",
-        "violationsLabel": "Pelanggaran:"
+        "violationsLabel": "Pelanggaran:",
+        "notesLabel": "Catatan:",
+        "vehicleTypeHint": "Indikator jenis kendaraan"
     },
     "dialogs": {
         "confirm": "Konfirmasi",

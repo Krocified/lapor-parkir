@@ -52,7 +52,8 @@
         "submitSuccess": "Report submitted successfully!",
         "submitError": "Failed to save report. Please try again.",
         "validationError": "Please fill in all required fields",
-        "title": "Report New Violation"
+        "title": "Report New Violation",
+        "vehicleTypeHint": "Vehicle type indicator"
     },
     "plateTypes": {
         "regular": "Regular",
@@ -111,7 +112,8 @@
         "loadError": "Failed to load reports",
         "reportStats_one": "{{count}} report",
         "reportStats_other": "{{count}} reports",
-        "violationsLabel": "Violations:"
+        "violationsLabel": "Violations:",
+        "notesLabel": "Notes:"
     },
     "dialogs": {
         "confirm": "Confirm",

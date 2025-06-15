@@ -1,6 +1,6 @@
 import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import colors, { semanticColors } from "../../../styles/colors";
 import { getPlateTypeInfo } from "../../../constants/plateTypes";
@@ -33,6 +33,26 @@ const ReportCard = React.memo(({ item, onDeleteReport }) => {
     );
   };
 
+  const renderVehicleTypeBadge = (vehicleType) => {
+    if (!vehicleType) return null;
+
+    const icon = vehicleType === "car" ? "car" : "motorbike";
+    const label = t(
+      `report.vehicleType${vehicleType === "car" ? "Car" : "Motorcycle"}`
+    );
+
+    return (
+      <MaterialCommunityIcons
+        name={icon}
+        size={24}
+        color={colors.textSecondary}
+        accessibilityLabel={label}
+        accessibilityRole="image"
+        accessibilityHint={t("report.vehicleTypeHint")}
+      />
+    );
+  };
+
   return (
     <View style={styles.reportCard}>
       <View style={styles.reportHeader}>
@@ -42,7 +62,10 @@ const ReportCard = React.memo(({ item, onDeleteReport }) => {
               {item.plateNumber}
             </Typography>
           </View>
-          {renderPlateTypeBadge(item.plateType)}
+          <View style={styles.badgesContainer}>
+            {renderVehicleTypeBadge(item.vehicleType)}
+            {renderPlateTypeBadge(item.plateType)}
+          </View>
         </View>
         <TouchableOpacity
           style={styles.deleteButton}
@@ -88,7 +111,7 @@ const ReportCard = React.memo(({ item, onDeleteReport }) => {
         {item.notes ? (
           <View style={styles.notesContainer}>
             <Typography variant="subtitle2" style={styles.notesLabel}>
-              Notes:
+              {t("search.notesLabel")}
             </Typography>
             <Typography variant="body2" style={styles.notesText}>
               {item.notes}
@@ -186,12 +209,13 @@ const styles = StyleSheet.create({
   notesContainer: {
     marginTop: 8,
   },
-  notesLabel: {
-    color: colors.textPrimary,
-    marginBottom: 4,
-  },
   notesText: {
     color: colors.textSecondary,
+  },
+  badgesContainer: {
+    flexDirection: "row",
+    gap: 8,
+    flexWrap: "wrap",
   },
 });
 
