@@ -60,7 +60,15 @@ fastify.get("/api/reports", async (request, reply) => {
 
 // Create a new report
 fastify.post("/api/reports", async (request, reply) => {
-  const { licensePlate, violations, location, notes } = request.body;
+  const {
+    licensePlate,
+    plateType,
+    vehicleType,
+    violations,
+    location,
+    notes,
+    coordinates,
+  } = request.body;
 
   if (!licensePlate || !violations || violations.length === 0) {
     reply.code(400);
@@ -74,10 +82,12 @@ fastify.post("/api/reports", async (request, reply) => {
     const newReport = {
       plateNumber: licensePlate, // Frontend expects plateNumber
       licensePlate, // Keep for API consistency
-      plateType: "regular", // Default plate type
+      plateType: plateType || "regular",
+      vehicleType: vehicleType || "car",
       violations,
       location: {
         address: location || "Unknown location",
+        coordinates: coordinates || null,
       },
       notes: notes || "",
       timestamp: now.toISOString(),

@@ -135,13 +135,25 @@ export default function ReportScreen() {
     try {
       const reportData = {
         licensePlate: plateNumber.toUpperCase().trim(),
+        plateType: plateType,
         vehicleType: vehicleType,
         violations: selectedViolations,
         location: location.address,
         notes: notes.trim(),
+        coordinates:
+          location.latitude && location.longitude
+            ? {
+                latitude: location.latitude,
+                longitude: location.longitude,
+              }
+            : null,
       };
 
-      await ApiService.createReport(reportData);
+      const response = await ApiService.createReport(reportData);
+
+      if (!response || response.error) {
+        throw new Error(response?.error || "Failed to create report");
+      }
 
       // Reset form first
       resetForm();

@@ -43,10 +43,14 @@ export default function SearchScreen() {
   };
 
   const confirmDeleteReport = async (reportId) => {
+    if (!reportId) return;
+
     try {
       await deleteReport(reportId);
       showNotification(t("search.deleteSuccess"), "success");
+      onRefresh(); // Refresh the page after successful deletion
     } catch (error) {
+      console.error("Error deleting report:", error);
       showNotification(t("search.deleteError"), "error");
     }
   };
@@ -97,8 +101,14 @@ export default function SearchScreen() {
         confirmText={t("search.deleteConfirmButton")}
         cancelText={t("search.deleteCancelButton")}
         type="danger"
-        onConfirm={() => handleConfirm(confirmDeleteReport)}
-        onCancel={() => handleCancel()}
+        onConfirm={async () => {
+          const reportId = confirmDialog.data;
+          if (!reportId) return;
+
+          await confirmDeleteReport(reportId);
+          handleCancel();
+        }}
+        onCancel={handleCancel}
       />
     </View>
   );

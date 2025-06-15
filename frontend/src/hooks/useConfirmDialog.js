@@ -20,19 +20,14 @@ export const useConfirmDialog = () => {
     });
   };
 
-  const handleConfirm = (callback) => {
+  const handleConfirm = () => {
     const { data } = confirmDialog;
     hideConfirmDialog();
-    if (callback) {
-      callback(data);
-    }
+    return data;
   };
 
-  const handleCancel = (callback) => {
+  const handleCancel = () => {
     hideConfirmDialog();
-    if (callback) {
-      callback();
-    }
   };
 
   return {

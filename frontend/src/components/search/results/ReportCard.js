@@ -46,7 +46,7 @@ const ReportCard = React.memo(({ item, onDeleteReport }) => {
         </View>
         <TouchableOpacity
           style={styles.deleteButton}
-          onPress={() => onDeleteReport(item.id)}
+          onPress={() => onDeleteReport(item._id)}
           activeOpacity={0.7}
         >
           <Ionicons name="trash-outline" size={20} color={colors.primary} />
